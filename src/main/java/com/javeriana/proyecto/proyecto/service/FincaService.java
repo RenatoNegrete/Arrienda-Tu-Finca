@@ -46,16 +46,15 @@ public class FincaService {
     }
 
     public FincaDTO update(FincaDTO fincaDTO) throws RuntimeException {
-        fincaDTO = get(fincaDTO.getId());
-        if (fincaDTO == null) {
-            throw new RuntimeException("Unidentified registry");
-
+        Optional<Finca> fincaOptional = fincaRepository.findById(fincaDTO.getId());
+        if (fincaOptional.isEmpty()) {
+            throw new RuntimeException("Finca not found");
         }
-        Finca finca = modelMapper.map(fincaDTO, Finca.class);
+        Finca finca = fincaOptional.get();
+        finca = modelMapper.map(fincaDTO, Finca.class);
         finca.setStatus(0);
         finca = fincaRepository.save(finca);
-        fincaDTO = modelMapper.map(finca, FincaDTO.class);
-        return fincaDTO;
+        return modelMapper.map(finca, FincaDTO.class);
     }
 
     public void delete(long id) {

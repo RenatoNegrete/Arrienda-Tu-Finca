@@ -9,14 +9,16 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FincaDTO {
+
+public class UsuarioDTO {
 
     private long id;
-    
+
     private String name;
-    private String address;
-    private String owner;
-    private String email;
+    private String lastName;
+    private int age;
+    private String document;
     private String phone;
+    private String mail;
 
 }
