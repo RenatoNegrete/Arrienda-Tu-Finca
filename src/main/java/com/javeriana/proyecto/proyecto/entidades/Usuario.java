@@ -30,6 +30,8 @@ public class Usuario {
     private String lastName;
     private int age;
     private String document;
+    private String username;
+    private String password;
     private String phone;
     private String mail;
     private int status;
