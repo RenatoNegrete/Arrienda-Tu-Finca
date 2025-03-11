@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.UsuarioDTO;
 import com.javeriana.proyecto.proyecto.entidades.Usuario;
+import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.UsuarioRepository;
 
 @Service
@@ -46,10 +47,10 @@ public class UsuarioService {
         return usuarioDTO;
     }
 
-    public UsuarioDTO update(UsuarioDTO usuarioDTO) throws RuntimeException {
+    public UsuarioDTO update(UsuarioDTO usuarioDTO) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioDTO.getId());
-        if (usuarioOptional == null) {
-            throw new RuntimeException("Finca not found");
+        if (usuarioOptional.isEmpty()) {
+            throw new NotFoundException("Usuario with ID " + usuarioDTO.getId() + " not found");
         }
         Usuario usuario = usuarioOptional.get();
         usuario = modelMapper.map(usuarioDTO, Usuario.class);
