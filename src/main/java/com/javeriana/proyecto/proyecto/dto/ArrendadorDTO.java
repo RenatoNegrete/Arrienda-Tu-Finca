@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class UsuarioDTO {
+public class ArrendadorDTO {
 
     private long id;
 

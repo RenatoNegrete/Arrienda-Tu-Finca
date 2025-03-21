@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javeriana.proyecto.proyecto.dto.UsuarioDTO;
-import com.javeriana.proyecto.proyecto.service.UsuarioService;
+import com.javeriana.proyecto.proyecto.dto.ArrendadorDTO;
+import com.javeriana.proyecto.proyecto.service.ArrendadorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,32 +20,32 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping(value = "/api/usuario")
-public class UsuarioController {
+public class ArrendadorController {
 
     @Autowired
-    UsuarioService usuarioService;
+    ArrendadorService usuarioService;
 
     @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
-    public List<UsuarioDTO> get() {
+    public List<ArrendadorDTO> get() {
         return usuarioService.get();
     }
       
     @CrossOrigin
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UsuarioDTO get(@PathVariable long id) {
+    public ArrendadorDTO get(@PathVariable long id) {
         return usuarioService.get(id);
     }
 
     @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE )
-    public UsuarioDTO save(@RequestBody UsuarioDTO usuarioDTO) throws RuntimeException {
+    public ArrendadorDTO save(@RequestBody ArrendadorDTO usuarioDTO) throws RuntimeException {
         return usuarioService.save(usuarioDTO);
     }
 
     @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public UsuarioDTO update(@RequestBody UsuarioDTO usuarioDTO) throws RuntimeException {
+    public ArrendadorDTO update(@RequestBody ArrendadorDTO usuarioDTO) throws RuntimeException {
         return usuarioService.update(usuarioDTO);
     }
       

@@ -20,7 +20,7 @@ import lombok.Setter;
 @Where(clause = "status = 0")
 @SQLDelete(sql = "UPDATE usuario SET status = 1 WHERE id=?")
 
-public class Usuario {
+public class Arrendador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
