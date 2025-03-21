@@ -12,10 +12,11 @@ import lombok.Setter;
 public class AdminDTO {
     
     private long id;
-    
     private String nombre;
     private String email;
+    private String contraseña;
     private String telefono;
+    private int status;
 
 
 }
