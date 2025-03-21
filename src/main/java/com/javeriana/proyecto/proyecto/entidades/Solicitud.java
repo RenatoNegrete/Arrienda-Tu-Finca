@@ -1,5 +1,7 @@
 package com.javeriana.proyecto.proyecto.entidades;
 
+import java.security.Timestamp;
+import java.util.Date;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,6 +19,12 @@ import lombok.Setter;
 public class Solicitud {
      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long id;
-    private boolean status;
+    private int status;
+    private Date fechaLlegada;
+    private Date FechaSalida;
+    private int cantPersonas;
+    private double valor;
+
 }
