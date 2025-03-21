@@ -12,11 +12,17 @@ import lombok.Setter;
 public class FincaDTO {
 
     private long id;
-    
-    private String name;
+    private String nombre;
+    private String tipoIngreso;
+    private String descripcion;
+    private int habitaciones;
+    private int baños;
+    private boolean mascotas;
+    private boolean piscina;
+    private boolean asador;
+    private double valorNoche;
     private String address;
     private String owner;
-    private String email;
-    private String phone;
+    private int status;
 
 }
