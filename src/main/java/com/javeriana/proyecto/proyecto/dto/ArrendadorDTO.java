@@ -13,14 +13,13 @@ import lombok.Setter;
 public class ArrendadorDTO {
 
     private long id;
-
-    private String name;
-    private String lastName;
+    private String nombre;
+    private String apellido;
     private int age;
-    private String document;
     private String username;
     private String password;
     private String phone;
     private String mail;
+    private int status;
 
 }
