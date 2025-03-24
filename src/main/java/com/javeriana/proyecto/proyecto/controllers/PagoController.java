@@ -14,46 +14,45 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javeriana.proyecto.proyecto.dto.SolicitudDTO;
-import com.javeriana.proyecto.proyecto.service.SolicitudService;
+import com.javeriana.proyecto.proyecto.dto.PagoDTO;
+import com.javeriana.proyecto.proyecto.service.PagoService;
 
 @RestController
-@RequestMapping(value = "/api/solicitud")
-public class SolicitudController {
+@RequestMapping(value = "/api/pago")
+public class PagoController {
+         @Autowired
+  private PagoService pagoService;
 
-    
-    @Autowired
-    private SolicitudService solicitudService;
+  @CrossOrigin
+    @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
+    public List<PagoDTO> get() {
+        return pagoService.get();
+    }
+
+ @CrossOrigin
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public PagoDTO get(@PathVariable long id) {
+        return pagoService.get(id);
+    }
 
     @CrossOrigin
-    @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
-    public List<SolicitudDTO> get() {
-        return solicitudService.get();
-    }
-
-      @CrossOrigin
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO get(@PathVariable long id) {
-        return solicitudService.get(id);
-    }
-
-     @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO save(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.save(solicitudDTO);
+    public PagoDTO save(@RequestBody PagoDTO pagoDTO) throws RuntimeException {
+        return pagoService.save(pagoDTO);
     }
-    
+
+
     @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO update(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.update(solicitudDTO);
+    public PagoDTO update(@RequestBody PagoDTO pagoDTO) throws RuntimeException {
+        return pagoService.update(pagoDTO);
     }
 
     @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
-        solicitudService.delete(id);
+        pagoService.delete(id);
     }
-
-
 }
+
+

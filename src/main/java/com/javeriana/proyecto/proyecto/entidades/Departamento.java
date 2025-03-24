@@ -27,4 +27,8 @@ public class Departamento {
     
     private long id;
     private String nombre;
+    public void setStatus(int i) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
+    }
 }

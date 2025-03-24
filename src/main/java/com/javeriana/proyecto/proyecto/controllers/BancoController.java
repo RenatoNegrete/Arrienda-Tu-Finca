@@ -14,46 +14,43 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javeriana.proyecto.proyecto.dto.SolicitudDTO;
-import com.javeriana.proyecto.proyecto.service.SolicitudService;
+import com.javeriana.proyecto.proyecto.dto.BancoDTO;
+import com.javeriana.proyecto.proyecto.service.BancoService;
 
 @RestController
-@RequestMapping(value = "/api/solicitud")
-public class SolicitudController {
-
-    
-    @Autowired
-    private SolicitudService solicitudService;
+@RequestMapping(value = "/api/banco")
+public class BancoController {
+      @Autowired
+    BancoService bancoService;
 
     @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
-    public List<SolicitudDTO> get() {
-        return solicitudService.get();
+    public List<BancoDTO> get() {
+        return bancoService.get();
     }
-
-      @CrossOrigin
+      
+    @CrossOrigin
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO get(@PathVariable long id) {
-        return solicitudService.get(id);
+    public BancoDTO get(@PathVariable long id) {
+        return bancoService.get(id);
     }
 
-     @CrossOrigin
-    @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO save(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.save(solicitudDTO);
+    @CrossOrigin
+    @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE )
+    public BancoDTO save(@RequestBody BancoDTO usuarioDTO) throws RuntimeException {
+        return bancoService.save(usuarioDTO);
     }
-    
+
     @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO update(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.update(solicitudDTO);
+    public BancoDTO update(@RequestBody BancoDTO usuarioDTO) throws RuntimeException {
+        return bancoService.update(usuarioDTO);
     }
-
+      
     @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
-        solicitudService.delete(id);
+        bancoService.delete(id);
     }
-
 
 }

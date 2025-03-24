@@ -14,46 +14,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.javeriana.proyecto.proyecto.dto.SolicitudDTO;
-import com.javeriana.proyecto.proyecto.service.SolicitudService;
+import com.javeriana.proyecto.proyecto.dto.MunicipioDTO;
+import com.javeriana.proyecto.proyecto.service.MunicipioService;
 
 @RestController
-@RequestMapping(value = "/api/solicitud")
-public class SolicitudController {
-
-    
+@RequestMapping(value = "/api/municipio")
+public class MunicipioController {
     @Autowired
-    private SolicitudService solicitudService;
+    private MunicipioService MunicipioService;
 
     @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
-    public List<SolicitudDTO> get() {
-        return solicitudService.get();
+    public List<MunicipioDTO> get() {
+        return MunicipioService.get();
+    }
+    
+    @CrossOrigin
+    @GetMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public MunicipioDTO get(@PathVariable long id) {
+        return MunicipioService.get(id);
     }
 
-      @CrossOrigin
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO get(@PathVariable long id) {
-        return solicitudService.get(id);
-    }
-
-     @CrossOrigin
+    @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO save(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.save(solicitudDTO);
+    public MunicipioDTO save(@RequestBody MunicipioDTO MunicipioDTO) throws RuntimeException {
+        return MunicipioService.save(MunicipioDTO);
     }
     
     @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
-    public SolicitudDTO update(@RequestBody SolicitudDTO solicitudDTO) throws RuntimeException {
-        return solicitudService.update(solicitudDTO);
+    public MunicipioDTO update(@RequestBody MunicipioDTO MunicipioDTO) throws RuntimeException {
+        return MunicipioService.update(MunicipioDTO);
     }
 
     @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
-        solicitudService.delete(id);
+        MunicipioService.delete(id);
     }
-
-
 }
