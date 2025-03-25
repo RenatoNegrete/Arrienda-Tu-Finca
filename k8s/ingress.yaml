@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: public
   rules:
-    - host: myapp.local
+    - host:
       http:
         paths:
           - path: /
