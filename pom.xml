@@ -31,7 +31,7 @@
 		<java.version>17</java.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.projectKey>Proyecto-Web</sonar.projectKey>
-    	<sonar.token>sqp_7d2877cd19c0d7fcf5b47e88289cfa1be8166185</sonar.token>
+    	<sonar.token>sqp_733ea07507e3fb945acc91dc399af1a9ad365d7b</sonar.token>
 	</properties>
 	<dependencies>
 		<dependency>
