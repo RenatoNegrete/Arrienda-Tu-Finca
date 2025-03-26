@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,5 +59,9 @@ public class Finca {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_municipio", referencedColumnName = "id", nullable = false)
     private Municipio municipio;
+
+    @OneToOne
+    @JoinColumn(name = "id_foto", referencedColumnName = "id")
+    private Foto foto;
 
 }

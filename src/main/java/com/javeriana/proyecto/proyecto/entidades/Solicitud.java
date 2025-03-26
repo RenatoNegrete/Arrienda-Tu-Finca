@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +37,7 @@ public class Solicitud {
     private LocalDate fechasalida;
     private int cantpersonas;
     private double valor;
+    private int estado;
     private int status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -46,6 +48,8 @@ public class Solicitud {
     @JoinColumn(name = "id_finca", referencedColumnName = "id", nullable = false)
     private Finca finca;
 
-
+    @OneToOne
+    @JoinColumn(name = "id_pago", referencedColumnName = "id")
+    private Pago pago;
 
 }

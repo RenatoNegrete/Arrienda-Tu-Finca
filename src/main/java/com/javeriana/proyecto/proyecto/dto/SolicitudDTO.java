@@ -1,6 +1,7 @@
 package com.javeriana.proyecto.proyecto.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,10 +16,15 @@ import lombok.Setter;
 public class SolicitudDTO {
     
     private long id;
-    private int status;
-    private Date fechaLlegada;
-    private Date FechaSalida;
-    private int cantPersonas;
+    private LocalDateTime fechasolicitud;
+    private LocalDate fechallegada;
+    private LocalDate fechasalida;
+    private int cantpersonas;
     private double valor;
+    private int estado;
+
+    private Long idArrendador;
+    private Long idFinca;
+    private Long idPago;
     
 }

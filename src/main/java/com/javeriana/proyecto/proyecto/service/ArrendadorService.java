@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.ArrendadorDTO;
 import com.javeriana.proyecto.proyecto.entidades.Arrendador;
+import com.javeriana.proyecto.proyecto.exception.AuthenticationException;
+import com.javeriana.proyecto.proyecto.exception.EmailExistsException;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.ArrendadorRepository;
 
@@ -23,12 +25,9 @@ public class ArrendadorService {
     ModelMapper modelMapper;
 
     public ArrendadorDTO get(long id) {
-        Optional<Arrendador> arrendadorOptional = arrendadorRepository.findById(id);
-        ArrendadorDTO arrendadorDTO = null;
-        if (arrendadorOptional != null) {
-            arrendadorDTO = modelMapper.map(arrendadorOptional.get(), ArrendadorDTO.class);
-        }
-        return arrendadorDTO;
+        Arrendador arrendador = arrendadorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + id + " not found"));
+        return modelMapper.map(arrendador, ArrendadorDTO.class);
     }
 
     public List<ArrendadorDTO> get() {
@@ -40,6 +39,11 @@ public class ArrendadorService {
     }
 
     public ArrendadorDTO save(ArrendadorDTO arrendadorDTO) {
+
+        if (arrendadorRepository.findByEmail(arrendadorDTO.getEmail()).isPresent()) {
+            throw new EmailExistsException("El email ya está en uso");
+        }
+
         Arrendador arrendador = modelMapper.map(arrendadorDTO, Arrendador.class);
         arrendador.setStatus(0);
         arrendador = arrendadorRepository.save(arrendador);
@@ -50,7 +54,7 @@ public class ArrendadorService {
     public ArrendadorDTO update(ArrendadorDTO arrendadorDTO) {
         Optional<Arrendador> arrendadorOptional = arrendadorRepository.findById(arrendadorDTO.getId());
         if (arrendadorOptional.isEmpty()) {
-            throw new NotFoundException("Usuario with ID " + arrendadorDTO.getId() + " not found");
+            throw new NotFoundException("Arrendador with ID " + arrendadorDTO.getId() + " not found");
         }
         Arrendador arrendador = arrendadorOptional.get();
         arrendador = modelMapper.map(arrendadorDTO, Arrendador.class);
@@ -60,7 +64,26 @@ public class ArrendadorService {
     }
 
     public void delete(long id) {
-        arrendadorRepository.deleteById(id);
+        Arrendador arrendador = arrendadorRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + id + " no encontrado"));
+        arrendador.setStatus(1);
+        arrendadorRepository.save(arrendador);
+    }
+
+    public ArrendadorDTO authenticate(String email, String contrasena) {
+        Optional<Arrendador> arrendadorOptional = arrendadorRepository.findByEmail(email);
+        
+        if (arrendadorOptional.isEmpty()) {
+            throw new AuthenticationException("Credenciales incorrectas");
+        }
+
+        Arrendador arrendador = arrendadorOptional.get();
+
+        if (contrasena == arrendador.getContrasena()) {
+            throw new AuthenticationException("Credenciales incorrectas");
+        }
+
+        return modelMapper.map(arrendador, ArrendadorDTO.class);
     }
 
 }

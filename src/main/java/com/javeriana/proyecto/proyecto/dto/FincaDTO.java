@@ -16,13 +16,15 @@ public class FincaDTO {
     private String tipoIngreso;
     private String descripcion;
     private int habitaciones;
-    private int baños;
+    private int banos;
     private boolean mascotas;
     private boolean piscina;
     private boolean asador;
     private double valorNoche;
-    private String address;
-    private String owner;
-    private int status;
+
+    private Long idAdministrador;
+    private Long idDepartamento;
+    private Long idMunicipio;
+    private Long idFoto;
 
 }

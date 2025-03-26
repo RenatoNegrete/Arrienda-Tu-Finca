@@ -12,7 +12,6 @@ import lombok.Setter;
 public class FotoDTO {
 
     private long id;
-    private byte[] imagen;
-    private int estado;
+    private String imagenUrl;
 
 }

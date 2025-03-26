@@ -13,6 +13,6 @@ public class PagoDTO {
 
     private long id;
     private String numCuenta;
-    private int estado;
+    private Long idBanco;
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -35,7 +36,10 @@ public class Arrendador {
     private String apellido;
     private String contrasena;
     private String telefono;
+
+    @Column(unique = true, nullable = false)
     private String email;
+    
     private int status;
 
     @OneToMany(mappedBy = "arrendador", fetch = FetchType.LAZY)
