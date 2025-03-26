@@ -38,7 +38,6 @@ public class DepartamentoService {
 
     public DepartamentoDTO save(DepartamentoDTO departamentoDTO) {
         Departamento departamento = modelMapper.map(departamentoDTO, Departamento.class);
-        departamento.setStatus(0);
         departamento = departamentoRepository.save(departamento);
         departamentoDTO.setId(departamento.getId());
         return departamentoDTO;
@@ -51,7 +50,6 @@ public class DepartamentoService {
         }
         Departamento departamento = deOptional.get();
         departamento = modelMapper.map(departamentoDTO, Departamento.class);
-        departamento.setStatus(0);
         departamento = departamentoRepository.save(departamento);
         return modelMapper.map(departamento, DepartamentoDTO.class);
     }

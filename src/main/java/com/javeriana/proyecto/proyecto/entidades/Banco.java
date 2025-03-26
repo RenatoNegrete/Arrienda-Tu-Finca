@@ -1,12 +1,14 @@
 package com.javeriana.proyecto.proyecto.entidades;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,18 +19,16 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Where(clause = "status = 0")
-@SQLDelete(sql = "UPDATE administrador SET status = 1 WHERE id=?")
 
 public class Banco {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     private long id;
+    
     private String nombre;
-    public void setStatus(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStatus'");
-    }
+   
+    @OneToMany(mappedBy = "banco", fetch = FetchType.LAZY)
+    private List<Pago> pagos = new ArrayList<>();
+
 }

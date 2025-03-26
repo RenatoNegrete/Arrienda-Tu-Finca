@@ -1,12 +1,17 @@
 package com.javeriana.proyecto.proyecto.entidades;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +31,13 @@ public class Administrador {
     private long id;
     
     private String nombre;
-    private String email;
+    private String apellido;
+    private String contrasena;
     private String telefono;
+    private String email;
     private int status;
+
+    @OneToMany(mappedBy = "administrador", fetch = FetchType.LAZY)
+    private List<Finca> fincas = new ArrayList<>();
+
 }

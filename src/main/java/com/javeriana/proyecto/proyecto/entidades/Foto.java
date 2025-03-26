@@ -24,8 +24,8 @@ public class Foto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    
     private long id;
-    private byte[] imagen;
-    private int estado;
+    
+    private String imagenurl;
+    private int status;
 }

@@ -39,7 +39,6 @@ public class BancoService {
 
     public BancoDTO save(BancoDTO BancoDTO) {
         Banco Banco = modelMapper.map(BancoDTO, Banco.class);
-        Banco.setStatus(0);
         Banco = BancoRepository.save(Banco);
         BancoDTO.setId(Banco.getId());
         return BancoDTO;
@@ -52,7 +51,6 @@ public class BancoService {
         }
         Banco Banco = BancoOptional.get();
         Banco = modelMapper.map(BancoDTO, Banco.class);
-        Banco.setStatus(0);
         Banco = BancoRepository.save(Banco);
         return modelMapper.map(Banco, BancoDTO.class);
     }
