@@ -83,13 +83,13 @@ public class DepartamentoServiceTest {
     void testSave() {
         when(modelMapper.map(departamentoDTO, Departamento.class)).thenReturn(departamento);
         when(departamentoRepository.save(departamento)).thenReturn(departamento);
-        when(modelMapper.map(departamento, DepartamentoDTO.class)).thenReturn(departamentoDTO);
 
         DepartamentoDTO result = departamentoService.save(departamentoDTO);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
     }
+
 
     @Test
     void testUpdate_Success() {

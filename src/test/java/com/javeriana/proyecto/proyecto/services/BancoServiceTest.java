@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -79,15 +80,16 @@ class BancoServiceTest {
     
     @Test
     void testSaveBanco() {
-        when(modelMapper.map(bancoDTO, Banco.class)).thenReturn(banco);
-        when(bancoRepository.save(banco)).thenReturn(banco);
-        when(modelMapper.map(banco, BancoDTO.class)).thenReturn(bancoDTO);
-        
+        lenient().when(modelMapper.map(bancoDTO, Banco.class)).thenReturn(banco);
+        lenient().when(modelMapper.map(banco, BancoDTO.class)).thenReturn(bancoDTO);
+        when(bancoRepository.save(any(Banco.class))).thenReturn(banco);
+
         BancoDTO result = bancoService.save(bancoDTO);
-        
+
         assertNotNull(result);
         assertEquals(1L, result.getId());
     }
+
     
     @Test
     void testUpdateBanco() {

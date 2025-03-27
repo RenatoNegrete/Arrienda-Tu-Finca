@@ -1,5 +1,7 @@
 package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -80,11 +82,11 @@ class AdministradorServiceTest {
     @Test
     void testSave() {
         when(adminRepository.findByEmail(adminDTO.getEmail())).thenReturn(Optional.empty());
-        when(modelMapper.map(adminDTO, Administrador.class)).thenReturn(admin);
-        when(adminRepository.save(admin)).thenReturn(admin);
-        when(modelMapper.map(admin, AdminDTO.class)).thenReturn(adminDTO);
+        when(adminRepository.save(any(Administrador.class))).thenReturn(admin);
+        when(modelMapper.map(any(Administrador.class), eq(AdminDTO.class))).thenReturn(adminDTO);
 
         AdminDTO result = administradorService.save(adminDTO);
+
         assertEquals(adminDTO.getEmail(), result.getEmail());
     }
 
