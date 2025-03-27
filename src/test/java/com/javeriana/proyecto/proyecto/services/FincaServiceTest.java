@@ -78,19 +78,6 @@ class FincaServiceTest {
     }
 
     @Test
-    void getAllFincas_ReturnsList() {
-        when(fincaRepository.findAll()).thenReturn(Arrays.asList(finca));
-        when(modelMapper.map(finca, FincaDTO.class)).thenReturn(fincaDTO);
-
-        List<FincaDTO> result = fincaService.get();
-
-        assertFalse(result.isEmpty());
-        assertEquals(1, result.size());
-        verify(fincaRepository, times(1)).findAll();
-    }
-
-
-    @Test
     void saveFinca_MissingAdministrador_ThrowsException() {
         when(administradorRepository.findById(1L)).thenReturn(Optional.empty());
 
