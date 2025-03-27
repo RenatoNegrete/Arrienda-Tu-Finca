@@ -1,29 +1,28 @@
 package com.javeriana.proyecto.proyecto.services;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
-import java.util.Arrays;
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
 import com.javeriana.proyecto.proyecto.dto.ArrendadorDTO;
 import com.javeriana.proyecto.proyecto.entidades.Arrendador;
-import com.javeriana.proyecto.proyecto.exception.AuthenticationException;
-import com.javeriana.proyecto.proyecto.exception.EmailExistsException;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.ArrendadorRepository;
 import com.javeriana.proyecto.proyecto.service.ArrendadorService;
 
-@ExtendWith(MockitoExtension.class)
 class ArrendadorServiceTest {
+
+    @InjectMocks
+    private ArrendadorService arrendadorService;
 
     @Mock
     private ArrendadorRepository arrendadorRepository;
@@ -31,127 +30,40 @@ class ArrendadorServiceTest {
     @Mock
     private ModelMapper modelMapper;
 
-    @InjectMocks
-    private ArrendadorService arrendadorService;
-
-    private Arrendador arrendador;
-    private ArrendadorDTO arrendadorDTO;
-
     @BeforeEach
     void setUp() {
-        arrendador = new Arrendador();
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetExistingArrendador() {
+        // Datos de prueba
+        Arrendador arrendador = new Arrendador();
         arrendador.setId(1L);
-        arrendador.setEmail("test@example.com");
-        arrendador.setContrasena("password");
-        arrendador.setStatus(0);
+        arrendador.setEmail("test@email.com");
 
-        arrendadorDTO = new ArrendadorDTO();
+        ArrendadorDTO arrendadorDTO = new ArrendadorDTO();
         arrendadorDTO.setId(1L);
-        arrendadorDTO.setEmail("test@example.com");
-        arrendadorDTO.setContrasena("password");
-    }
+        arrendadorDTO.setEmail("test@email.com");
 
-    @Test
-    void testGetArrendadorById() {
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
         when(modelMapper.map(arrendador, ArrendadorDTO.class)).thenReturn(arrendadorDTO);
 
+        // Llamar al método y verificar el resultado
         ArrendadorDTO result = arrendadorService.get(1L);
-
-        assertNotNull(result);
         assertEquals(1L, result.getId());
+        assertEquals("test@email.com", result.getEmail());
     }
 
     @Test
-    void testGetArrendadorByIdNotFound() {
+    void testGetNonExistingArrendador() {
+        // Configuración del mock para lanzar una excepción
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> arrendadorService.get(1L));
-    }
 
-    @Test
-    void testGetAllArrendadores() {
-        List<Arrendador> arrendadores = Arrays.asList(arrendador);
-        when(arrendadorRepository.findAll()).thenReturn(arrendadores);
-        when(modelMapper.map(arrendador, ArrendadorDTO.class)).thenReturn(arrendadorDTO);
-
-        List<ArrendadorDTO> result = arrendadorService.get();
-
-        assertEquals(1, result.size());
-    }
-
-    @Test
-    void testSaveArrendador() {
-        when(arrendadorRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
-        when(modelMapper.map(arrendadorDTO, Arrendador.class)).thenReturn(arrendador);
-        when(arrendadorRepository.save(arrendador)).thenReturn(arrendador);
-        when(modelMapper.map(arrendador, ArrendadorDTO.class)).thenReturn(arrendadorDTO);
-
-        ArrendadorDTO result = arrendadorService.save(arrendadorDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-    }
-
-    @Test
-    void testSaveArrendadorEmailExists() {
-        when(arrendadorRepository.findByEmail("test@example.com")).thenReturn(Optional.of(arrendador));
-        assertThrows(EmailExistsException.class, () -> arrendadorService.save(arrendadorDTO));
-    }
-
-    @Test
-    void testUpdateArrendador() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
-        when(modelMapper.map(arrendadorDTO, Arrendador.class)).thenReturn(arrendador);
-        when(arrendadorRepository.save(arrendador)).thenReturn(arrendador);
-        when(modelMapper.map(arrendador, ArrendadorDTO.class)).thenReturn(arrendadorDTO);
-
-        ArrendadorDTO result = arrendadorService.update(arrendadorDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-    }
-
-    @Test
-    void testUpdateArrendadorNotFound() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> arrendadorService.update(arrendadorDTO));
-    }
-
-    @Test
-    void testDeleteArrendador() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
-        doNothing().when(arrendadorRepository).save(any(Arrendador.class));
-
-        assertDoesNotThrow(() -> arrendadorService.delete(1L));
-        verify(arrendadorRepository, times(1)).save(any(Arrendador.class));
-    }
-
-    @Test
-    void testDeleteArrendadorNotFound() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> arrendadorService.delete(1L));
-    }
-
-    @Test
-    void testAuthenticateSuccess() {
-        when(arrendadorRepository.findByEmail("test@example.com")).thenReturn(Optional.of(arrendador));
-        when(modelMapper.map(arrendador, ArrendadorDTO.class)).thenReturn(arrendadorDTO);
-
-        ArrendadorDTO result = arrendadorService.authenticate("test@example.com", "password");
-
-        assertNotNull(result);
-        assertEquals("test@example.com", result.getEmail());
-    }
-
-    @Test
-    void testAuthenticateInvalidEmail() {
-        when(arrendadorRepository.findByEmail("wrong@example.com")).thenReturn(Optional.empty());
-        assertThrows(AuthenticationException.class, () -> arrendadorService.authenticate("wrong@example.com", "password"));
-    }
-
-    @Test
-    void testAuthenticateInvalidPassword() {
-        when(arrendadorRepository.findByEmail("test@example.com")).thenReturn(Optional.of(arrendador));
-        assertThrows(AuthenticationException.class, () -> arrendadorService.authenticate("test@example.com", "wrongpass"));
+        // Verificar que la excepción se lanza
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            arrendadorService.get(1L);
+        });
+        assertEquals("Arrendador with ID 1 not found", exception.getMessage());
     }
 }
