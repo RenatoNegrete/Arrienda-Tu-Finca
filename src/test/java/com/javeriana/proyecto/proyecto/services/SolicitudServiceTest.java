@@ -1,4 +1,5 @@
 package com.javeriana.proyecto.proyecto.services;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -27,12 +28,16 @@ class SolicitudServiceTest {
 
     @Mock
     private SolicitudRepository solicitudRepository;
+
     @Mock
     private ArrendadorRepository arrendadorRepository;
+
     @Mock
     private FincaRepository fincaRepository;
+
     @Mock
     private PagoRepository pagoRepository;
+
     @Mock
     private ModelMapper modelMapper;
 
@@ -46,6 +51,7 @@ class SolicitudServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Configuración inicial
         arrendador = new Arrendador();
         arrendador.setId(1L);
 
@@ -57,22 +63,26 @@ class SolicitudServiceTest {
         solicitud.setId(1L);
         solicitud.setArrendador(arrendador);
         solicitud.setFinca(finca);
-        solicitud.setFechasolicitud(LocalDateTime.now());
-        
+        solicitud.setFechasolicitud(LocalDateTime.of(2025, 3, 27, 10, 30)); // Fecha fija
+        solicitud.setFechallegada(LocalDate.of(2025, 4, 1));
+        solicitud.setFechasalida(LocalDate.of(2025, 4, 6));
+        solicitud.setStatus(0);
+
         solicitudDTO = new SolicitudDTO();
         solicitudDTO.setId(1L);
         solicitudDTO.setIdArrendador(1L);
         solicitudDTO.setIdFinca(1L);
-        solicitudDTO.setFechallegada(LocalDate.now());
-        solicitudDTO.setFechasalida(LocalDate.now().plusDays(5));
+        solicitudDTO.setFechallegada(LocalDate.of(2025, 4, 1));
+        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 6));
     }
 
     @Test
-    void testGetSolicitudById() {
+    void testGetSolicitudById_Success() {
         when(solicitudRepository.findById(1L)).thenReturn(Optional.of(solicitud));
         when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
 
         SolicitudDTO result = solicitudService.get(1L);
+
         assertNotNull(result);
         assertEquals(1L, result.getId());
     }
@@ -80,37 +90,67 @@ class SolicitudServiceTest {
     @Test
     void testGetSolicitudById_NotFound() {
         when(solicitudRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(NotFoundException.class, () -> solicitudService.get(1L));
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.get(1L));
+
+        assertEquals("Solicitud with ID 1 not found", exception.getMessage());
     }
 
     @Test
-    void testGetAllSolicitudes() {
+    void testGetAllSolicitudes_Success() {
         when(solicitudRepository.findAll()).thenReturn(Arrays.asList(solicitud));
         when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
 
         List<SolicitudDTO> result = solicitudService.get();
+
+        assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
     }
 
     @Test
-    void testSaveSolicitud() {
+    void testSaveSolicitud_Success() {
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
         when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
         when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
-        when(solicitudRepository.save(any(Solicitud.class))).thenReturn(solicitud);
+        when(solicitudRepository.save(solicitud)).thenReturn(solicitud);
         when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
 
         SolicitudDTO result = solicitudService.save(solicitudDTO);
+
         assertNotNull(result);
         assertEquals(1L, result.getId());
+
+        verify(arrendadorRepository, times(1)).findById(1L);
+        verify(fincaRepository, times(1)).findById(1L);
+        verify(solicitudRepository, times(1)).save(solicitud);
     }
 
     @Test
-    void testDeleteSolicitud() {
+    void testSaveSolicitud_ArrendadorNotFound() {
+        when(arrendadorRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.save(solicitudDTO));
+
+        assertEquals("Arrendador with ID 1 not found", exception.getMessage());
+    }
+
+    @Test
+    void testDeleteSolicitud_Success() {
         when(solicitudRepository.findById(1L)).thenReturn(Optional.of(solicitud));
 
-        assertDoesNotThrow(() -> solicitudService.delete(1L));
+        solicitudService.delete(1L);
+
+        assertEquals(1, solicitud.getStatus());
         verify(solicitudRepository, times(1)).save(solicitud);
+    }
+
+    @Test
+    void testDeleteSolicitud_NotFound() {
+        when(solicitudRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.delete(1L));
+
+        assertEquals("Solicitud with ID 1 not found", exception.getMessage());
     }
 }
