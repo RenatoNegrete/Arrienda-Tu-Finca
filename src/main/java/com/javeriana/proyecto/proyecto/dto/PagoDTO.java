@@ -15,6 +15,6 @@ public class PagoDTO {
     private String numCuenta;
     private double valor;
     private Long idBanco;
-    private long idSolicitud;
+    private Long idSolicitud;
 
 }
