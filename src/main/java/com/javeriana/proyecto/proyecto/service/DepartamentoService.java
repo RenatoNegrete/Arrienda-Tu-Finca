@@ -10,22 +10,21 @@ import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.DepartamentoDTO;
 import com.javeriana.proyecto.proyecto.entidades.Departamento;
+import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.DepartamentoRepository;
 
 @Service
 public class DepartamentoService {
-     @Autowired
+
+    @Autowired
     DepartamentoRepository departamentoRepository;
     @Autowired
     ModelMapper modelMapper;
 
     public DepartamentoDTO get(long id) {
-        Optional<Departamento> fincaOptional = departamentoRepository.findById(id);
-        DepartamentoDTO departamentoDTO = null;
-        if (fincaOptional != null) {
-            departamentoDTO = modelMapper.map(fincaOptional.get(), DepartamentoDTO.class);
-        }
-        return departamentoDTO;
+        Departamento departamento = departamentoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Departamento with ID " + id + " not found"));
+        return modelMapper.map(departamento, DepartamentoDTO.class);
     }
 
     public List<DepartamentoDTO> get() {
@@ -46,7 +45,7 @@ public class DepartamentoService {
     public DepartamentoDTO update(DepartamentoDTO departamentoDTO) throws RuntimeException {
         Optional<Departamento> deOptional = departamentoRepository.findById(departamentoDTO.getId());
         if (deOptional.isEmpty()) {
-            throw new RuntimeException("Finca not found");
+            throw new NotFoundException("Departamento with ID " + departamentoDTO.getId() + " not found");
         }
         Departamento departamento = deOptional.get();
         departamento = modelMapper.map(departamentoDTO, Departamento.class);

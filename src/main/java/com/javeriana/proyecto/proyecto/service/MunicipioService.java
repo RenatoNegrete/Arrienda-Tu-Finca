@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.MunicipioDTO;
 import com.javeriana.proyecto.proyecto.entidades.Municipio;
+import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.MunicipioRepository;
 
 @Service
@@ -20,16 +21,13 @@ public class MunicipioService {
     ModelMapper modelMapper;
 
     
-       public MunicipioDTO get(long id) {
-        Optional<Municipio> solicitudOptional = municipioRepository.findById(id);
-        MunicipioDTO MunicipioDTO = null;
-        if (solicitudOptional != null) {
-            MunicipioDTO = modelMapper.map(solicitudOptional.get(), MunicipioDTO.class);
-        }
-        return MunicipioDTO;
+    public MunicipioDTO get(long id) {
+        Municipio municipio = municipioRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Municipio with ID " + id + " not found"));
+        return modelMapper.map(municipio, MunicipioDTO.class);
     }
 
-public List<MunicipioDTO> get() {
+    public List<MunicipioDTO> get() {
         List<Municipio> Municipios = (List<Municipio>) municipioRepository.findAll();
         List<MunicipioDTO> MunicipioDTOs = Municipios.stream()
                                                 .map(Municipio -> modelMapper.map(Municipio, MunicipioDTO.class))
@@ -49,7 +47,7 @@ public List<MunicipioDTO> get() {
     public MunicipioDTO update(MunicipioDTO MunicipioDTO) throws RuntimeException {
         Optional<Municipio> MunicipioOptional = municipioRepository.findById(MunicipioDTO.getId());
         if (MunicipioOptional.isEmpty()) {
-            throw new RuntimeException("Municipio not found");
+            throw new NotFoundException("Municipio with ID " + MunicipioDTO.getId() + " not found");
         }
         Municipio Municipio = MunicipioOptional.get();
         Municipio = modelMapper.map(MunicipioDTO, Municipio.class);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,5 +56,16 @@ public class SolicitudController {
         solicitudService.delete(id);
     }
 
+    @CrossOrigin
+    @GetMapping("/finca/{idFinca}")
+    public ResponseEntity<List<SolicitudDTO>> getSolicitudesByFinca(@PathVariable Long idFinca) {
+        return ResponseEntity.ok(solicitudService.getSolicitudesByFinca(idFinca));
+    }
 
+    @CrossOrigin
+    @GetMapping("/arrendador/{idArrendador}")
+    public ResponseEntity<List<SolicitudDTO>> getSolicitudesByArrendador(@PathVariable Long idArrendador) {
+        return ResponseEntity.ok(solicitudService.getSolicitudesByArrendador(idArrendador));
+    }
+    
 }

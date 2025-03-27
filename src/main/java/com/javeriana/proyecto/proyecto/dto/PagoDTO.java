@@ -13,6 +13,8 @@ public class PagoDTO {
 
     private long id;
     private String numCuenta;
+    private double valor;
     private Long idBanco;
+    private long idSolicitud;
 
 }

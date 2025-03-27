@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,9 @@ public class Pago {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_banco", referencedColumnName = "id", nullable = false)
     private Banco banco;
+
+    @OneToOne
+    @JoinColumn(name = "id_solicitud", referencedColumnName = "id")
+    private Solicitud solicitud;
     
 }

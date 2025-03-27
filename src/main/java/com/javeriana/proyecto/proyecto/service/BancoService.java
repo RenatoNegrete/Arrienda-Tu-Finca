@@ -15,18 +15,16 @@ import com.javeriana.proyecto.proyecto.repositorios.BancoRepository;
 
 @Service
 public class BancoService {
-     @Autowired
+
+    @Autowired
     BancoRepository BancoRepository;
     @Autowired
     ModelMapper modelMapper;
 
     public BancoDTO get(long id) {
-        Optional<Banco> BancoOptional = BancoRepository.findById(id);
-        BancoDTO BancoDTO = null;
-        if (BancoOptional != null) {
-            BancoDTO = modelMapper.map(BancoOptional.get(), BancoDTO.class);
-        }
-        return BancoDTO;
+        Banco banco = BancoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Banco with ID " + id + " not found"));
+        return modelMapper.map(banco, BancoDTO.class);
     }
 
     public List<BancoDTO> get() {
@@ -47,7 +45,7 @@ public class BancoService {
     public BancoDTO update(BancoDTO BancoDTO) {
         Optional<Banco> BancoOptional = BancoRepository.findById(BancoDTO.getId());
         if (BancoOptional.isEmpty()) {
-            throw new NotFoundException("Usuario with ID " + BancoDTO.getId() + " not found");
+            throw new NotFoundException("Banco with ID " + BancoDTO.getId() + " not found");
         }
         Banco Banco = BancoOptional.get();
         Banco = modelMapper.map(BancoDTO, Banco.class);
