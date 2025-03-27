@@ -54,6 +54,9 @@ public class BancoService {
     }
 
     public void delete(long id) {
+        if (!BancoRepository.existsById(id)) {
+            throw new NotFoundException("Banco with ID " + id + " not found");
+        }
         BancoRepository.deleteById(id);
     }
 }
