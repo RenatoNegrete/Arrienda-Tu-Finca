@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -107,16 +108,27 @@ class FincaServiceTest {
         when(administradorRepository.findById(1L)).thenReturn(Optional.of(administrador));
         when(departamentoRepository.findById(1L)).thenReturn(Optional.of(departamento));
         when(municipioRepository.findById(1L)).thenReturn(Optional.of(municipio));
-        when(fotoRepository.findById(1L)).thenReturn(Optional.of(foto));
+
+        if (fincaDTO.getIdFoto() != null) {
+            when(fotoRepository.findById(1L)).thenReturn(Optional.of(foto));
+        }
+
         when(modelMapper.map(fincaDTO, Finca.class)).thenReturn(finca);
         when(fincaRepository.save(any(Finca.class))).thenReturn(finca);
-        when(modelMapper.map(finca, FincaDTO.class)).thenReturn(fincaDTO);
 
         FincaDTO result = fincaService.save(fincaDTO);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
+
         verify(fincaRepository, times(1)).save(any(Finca.class));
+        verify(administradorRepository, times(1)).findById(1L);
+        verify(departamentoRepository, times(1)).findById(1L);
+        verify(municipioRepository, times(1)).findById(1L);
+    
+        if (fincaDTO.getIdFoto() != null) {
+            verify(fotoRepository, times(1)).findById(1L);
+        }
     }
 
     @Test
