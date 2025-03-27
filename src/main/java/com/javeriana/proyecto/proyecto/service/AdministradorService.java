@@ -78,7 +78,7 @@ public class AdministradorService {
 
         Administrador admin = adminOptional.get();
 
-        if (contrasena == admin.getContrasena()) {
+        if (!contrasena.equals(admin.getContrasena())) {
             throw new AuthenticationException("Credenciales incorrectas");
         }
 

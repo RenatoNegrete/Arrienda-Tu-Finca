@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.proyecto.service;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -78,7 +79,9 @@ public class SolicitudService {
         solicitud.setFinca(finca);
         solicitud.setPago(null);
         solicitud.setValor(valorTotal);
+        solicitud.setEstado(0);
         solicitud.setStatus(0);
+        solicitud.setFechasolicitud(LocalDateTime.now());
         solicitud = solicitudRepository.save(solicitud);
         solicitudDTO.setId(solicitud.getId());
         return solicitudDTO;
@@ -96,8 +99,11 @@ public class SolicitudService {
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
                 .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
 
-        Pago pago = pagoRepository.findById(solicitudDTO.getIdPago())
+        Pago pago = null;
+        if (solicitudDTO.getIdPago() != null) {
+            pagoRepository.findById(solicitudDTO.getIdPago())
                 .orElseThrow(() -> new NotFoundException("Pago with ID " + solicitudDTO.getIdPago() + " not found"));
+        }
 
         Solicitud solicitud = solicitudOptional.get();
         solicitud = modelMapper.map(solicitudDTO, Solicitud.class);
@@ -136,7 +142,9 @@ public class SolicitudService {
         solicitud.setFinca(finca);
         solicitud.setPago(null);
         solicitud.setValor(valorTotal);
+        solicitud.setEstado(0);
         solicitud.setStatus(0);
+        solicitud.setFechasolicitud(LocalDateTime.now());
         solicitud = solicitudRepository.save(solicitud);
         solicitudDTO.setId(solicitud.getId());
         return solicitudDTO;

@@ -35,6 +35,7 @@ public class PagoService {
                 .orElseThrow(() -> new NotFoundException("Pago with ID " + id + " not found"));
         PagoDTO pagoDTO = modelMapper.map(pago, PagoDTO.class);
         pagoDTO.setIdBanco(pago.getBanco() != null ? pago.getBanco().getId() : null);
+        pagoDTO.setIdSolicitud(pago.getSolicitud() != null ? pago.getSolicitud().getId() : null);
 
         return pagoDTO;
     }
@@ -45,6 +46,7 @@ public class PagoService {
         return pagos.stream().map(pago -> {
             PagoDTO pagoDTO = modelMapper.map(pago, PagoDTO.class);
             pagoDTO.setIdBanco(pago.getBanco() != null ? pago.getBanco().getId() : null);
+            pagoDTO.setIdSolicitud(pago.getSolicitud() != null ? pago.getSolicitud().getId() : null);
             return pagoDTO;
         }).collect(Collectors.toList());
     }
@@ -79,9 +81,13 @@ public class PagoService {
         Banco banco = bancoRepository.findById(pagoDTO.getIdBanco())
                 .orElseThrow(() -> new NotFoundException("Banco with ID " + pagoDTO.getIdBanco() + " not found"));
 
+        Solicitud solicitud = solicitudRepository.findById(pagoDTO.getIdSolicitud())
+                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + pagoDTO.getIdSolicitud() + " not found"));
+
         Pago pago = pagoOptional.get();
         pago = modelMapper.map(pagoDTO, Pago.class);
         pago.setBanco(banco);
+        pago.setSolicitud(solicitud);
         pago = pagoRepository.save(pago);
         return modelMapper.map(pago, PagoDTO.class);
     }

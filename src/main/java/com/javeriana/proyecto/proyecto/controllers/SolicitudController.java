@@ -57,6 +57,12 @@ public class SolicitudController {
     }
 
     @CrossOrigin
+    @PostMapping("/arrendador/{idArrendador}/crear")
+    public ResponseEntity<SolicitudDTO> create(@PathVariable long idArrendador, @RequestBody SolicitudDTO solicitudDTO) {
+        return ResponseEntity.ok(solicitudService.createSolicitud(solicitudDTO, idArrendador));
+    }
+
+    @CrossOrigin
     @GetMapping("/finca/{idFinca}")
     public ResponseEntity<List<SolicitudDTO>> getSolicitudesByFinca(@PathVariable Long idFinca) {
         return ResponseEntity.ok(solicitudService.getSolicitudesByFinca(idFinca));

@@ -79,7 +79,7 @@ public class ArrendadorService {
 
         Arrendador arrendador = arrendadorOptional.get();
 
-        if (contrasena == arrendador.getContrasena()) {
+        if (!contrasena.equals(arrendador.getContrasena())) {
             throw new AuthenticationException("Credenciales incorrectas");
         }
 

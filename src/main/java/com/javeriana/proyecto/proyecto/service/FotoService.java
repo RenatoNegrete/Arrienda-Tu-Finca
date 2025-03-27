@@ -41,6 +41,7 @@ public List<FotoDTO> get() {
 
     public FotoDTO save(FotoDTO fotoDTO) {
         Foto foto = modelMapper.map(fotoDTO, Foto.class);
+        foto.setImagenUrl(fotoDTO.getImagenUrl());
         foto = fotoRepository.save(foto);
         fotoDTO.setId(foto.getId());
         return fotoDTO;
