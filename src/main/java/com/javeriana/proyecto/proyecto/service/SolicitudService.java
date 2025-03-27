@@ -61,17 +61,17 @@ public class SolicitudService {
     }
 
     public SolicitudDTO save(SolicitudDTO solicitudDTO) {
-        Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + solicitudDTO.getIdArrendador() + " not found"));
-
-        Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
-
         long diasEstancia = ChronoUnit.DAYS.between(solicitudDTO.getFechallegada(), solicitudDTO.getFechasalida());
         if (diasEstancia <= 0) {
             throw new WrongStayException("La fecha de salida debe ser posterior a la fecha de inicio");
         }
         double valorTotal = diasEstancia * finca.getValorNoche();
+
+        Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
+                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + solicitudDTO.getIdArrendador() + " not found"));
+
+        Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
+                .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
 
         Solicitud solicitud = modelMapper.map(solicitudDTO, Solicitud.class);
 
@@ -117,7 +117,7 @@ public class SolicitudService {
 
     public void delete(long id) {
         Solicitud solicitud = solicitudRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " no encontrado"));
         solicitud.setStatus(1);
         solicitudRepository.save(solicitud);
     }
