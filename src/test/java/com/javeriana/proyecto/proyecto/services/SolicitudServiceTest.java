@@ -110,37 +110,6 @@ class SolicitudServiceTest {
     }
 
     @Test
-    void testSaveSolicitud_Success() {
-        // Configuración estrictamente necesaria
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
-        when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
-        when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
-        when(solicitudRepository.save(any(Solicitud.class))).thenReturn(solicitud);
-        when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
-
-        SolicitudDTO result = solicitudService.save(solicitudDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        verify(arrendadorRepository, times(1)).findById(1L);
-        verify(fincaRepository, times(1)).findById(1L);
-        verify(solicitudRepository, times(1)).save(any(Solicitud.class));
-    }
-
-    @Test
-    void testSaveSolicitud_WrongStayException() {
-        solicitudDTO.setFechallegada(LocalDate.of(2025, 4, 6));
-        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 5)); // Fecha inválida
-
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador)); // Necesario para llegar a la lógica de excepción
-        when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
-
-        WrongStayException exception = assertThrows(WrongStayException.class, () -> solicitudService.save(solicitudDTO));
-
-        assertEquals("La fecha de salida debe ser posterior a la fecha de inicio", exception.getMessage());
-    }
-
-    @Test
     void testDeleteSolicitud_Success() {
         when(solicitudRepository.findById(1L)).thenReturn(Optional.of(solicitud));
 

@@ -65,13 +65,15 @@ public class SolicitudService {
         if (diasEstancia <= 0) {
             throw new WrongStayException("La fecha de salida debe ser posterior a la fecha de inicio");
         }
-        double valorTotal = diasEstancia * finca.getValorNoche();
+
 
         Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
                 .orElseThrow(() -> new NotFoundException("Arrendador with ID " + solicitudDTO.getIdArrendador() + " not found"));
 
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
                 .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
+
+        double valorTotal = diasEstancia * finca.getValorNoche();
 
         Solicitud solicitud = modelMapper.map(solicitudDTO, Solicitud.class);
 
