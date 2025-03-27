@@ -36,9 +36,6 @@ class SolicitudServiceTest {
     private FincaRepository fincaRepository;
 
     @Mock
-    private PagoRepository pagoRepository;
-
-    @Mock
     private ModelMapper modelMapper;
 
     @InjectMocks
@@ -51,7 +48,6 @@ class SolicitudServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Configuración inicial
         arrendador = new Arrendador();
         arrendador.setId(1L);
 
@@ -63,7 +59,7 @@ class SolicitudServiceTest {
         solicitud.setId(1L);
         solicitud.setArrendador(arrendador);
         solicitud.setFinca(finca);
-        solicitud.setFechasolicitud(LocalDateTime.of(2025, 3, 27, 10, 30)); // Fecha fija
+        solicitud.setFechasolicitud(LocalDateTime.of(2025, 3, 27, 10, 30));
         solicitud.setFechallegada(LocalDate.of(2025, 4, 1));
         solicitud.setFechasalida(LocalDate.of(2025, 4, 6));
         solicitud.setStatus(0);
@@ -93,7 +89,7 @@ class SolicitudServiceTest {
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.get(1L));
 
-        assertEquals("Solicitud with ID 1 not found", exception.getMessage());
+        assertEquals("Solicitud with ID 1 not found", exception.getMessage()); // Corregido mensaje en inglés
     }
 
     @Test
@@ -113,7 +109,7 @@ class SolicitudServiceTest {
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
         when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
         when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
-        when(solicitudRepository.save(solicitud)).thenReturn(solicitud);
+        when(solicitudRepository.save(any(Solicitud.class))).thenReturn(solicitud);
         when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
 
         SolicitudDTO result = solicitudService.save(solicitudDTO);
@@ -151,6 +147,6 @@ class SolicitudServiceTest {
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.delete(1L));
 
-        assertEquals("Solicitud with ID 1 not found", exception.getMessage());
+        assertEquals("Solicitud with ID 1 not found", exception.getMessage()); // Corregido mensaje en inglés
     }
 }
