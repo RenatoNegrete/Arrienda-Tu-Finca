@@ -38,6 +38,7 @@ public class FincaService {
         this.departamentoRepository = departamentoRepository;
         this.municipioRepository = municipioRepository;
         this.fotoRepository = fotoRepository;
+        this.modelMapper = modelMapper;
     }
 
     private String notFound = " not found";
