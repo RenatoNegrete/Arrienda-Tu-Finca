@@ -82,7 +82,9 @@ class AdministradorServiceTest {
     @Test
     void testSave() {
         when(adminRepository.findByEmail(adminDTO.getEmail())).thenReturn(Optional.empty());
+        when(modelMapper.map(adminDTO, Administrador.class)).thenReturn(admin);
         when(adminRepository.save(any(Administrador.class))).thenReturn(admin);
+        when(modelMapper.map(admin, AdminDTO.class)).thenReturn(adminDTO);
 
         AdminDTO result = administradorService.save(adminDTO);
 

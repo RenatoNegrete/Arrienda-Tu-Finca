@@ -117,7 +117,7 @@ public class SolicitudService {
 
     public void delete(long id) {
         Solicitud solicitud = solicitudRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " not found"));
         solicitud.setStatus(1);
         solicitudRepository.save(solicitud);
     }
