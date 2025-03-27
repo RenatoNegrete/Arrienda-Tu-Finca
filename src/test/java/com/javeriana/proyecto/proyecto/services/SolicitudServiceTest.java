@@ -1,5 +1,6 @@
 package com.javeriana.proyecto.proyecto.services;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,8 +21,9 @@ import org.modelmapper.ModelMapper;
 import com.javeriana.proyecto.proyecto.dto.SolicitudDTO;
 import com.javeriana.proyecto.proyecto.entidades.*;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
+import com.javeriana.proyecto.proyecto.exception.WrongStayException;
 import com.javeriana.proyecto.proyecto.repositorios.*;
-import com.javeriana.proyecto.proyecto.service.SolicitudService;
+import com.javeriana.proyecto.proyecto.service.*;
 
 @ExtendWith(MockitoExtension.class)
 class SolicitudServiceTest {
@@ -51,7 +53,6 @@ class SolicitudServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Configuración inicial
         arrendador = new Arrendador();
         arrendador.setId(1L);
 
@@ -63,7 +64,7 @@ class SolicitudServiceTest {
         solicitud.setId(1L);
         solicitud.setArrendador(arrendador);
         solicitud.setFinca(finca);
-        solicitud.setFechasolicitud(LocalDateTime.of(2025, 3, 27, 10, 30)); // Fecha fija
+        solicitud.setFechasolicitud(LocalDateTime.of(2025, 3, 27, 10, 30));
         solicitud.setFechallegada(LocalDate.of(2025, 4, 1));
         solicitud.setFechasalida(LocalDate.of(2025, 4, 6));
         solicitud.setStatus(0);
@@ -85,6 +86,7 @@ class SolicitudServiceTest {
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
+        verify(solicitudRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -113,26 +115,26 @@ class SolicitudServiceTest {
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
         when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
         when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
-        when(solicitudRepository.save(solicitud)).thenReturn(solicitud);
+        when(solicitudRepository.save(any(Solicitud.class))).thenReturn(solicitud);
         when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
 
         SolicitudDTO result = solicitudService.save(solicitudDTO);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
-
         verify(arrendadorRepository, times(1)).findById(1L);
         verify(fincaRepository, times(1)).findById(1L);
-        verify(solicitudRepository, times(1)).save(solicitud);
+        verify(solicitudRepository, times(1)).save(any(Solicitud.class));
     }
 
     @Test
-    void testSaveSolicitud_ArrendadorNotFound() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.empty());
+    void testSaveSolicitud_WrongStayException() {
+        solicitudDTO.setFechallegada(LocalDate.of(2025, 4, 6));
+        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 1)); // Fecha de salida anterior a la de llegada
 
-        NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.save(solicitudDTO));
+        WrongStayException exception = assertThrows(WrongStayException.class, () -> solicitudService.save(solicitudDTO));
 
-        assertEquals("Arrendador with ID 1 not found", exception.getMessage());
+        assertEquals("La fecha de salida debe ser posterior a la fecha de inicio", exception.getMessage());
     }
 
     @Test
@@ -151,6 +153,6 @@ class SolicitudServiceTest {
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> solicitudService.delete(1L));
 
-        assertEquals("Solicitud with ID 1 not found", exception.getMessage());
+        assertEquals("Solicitud with ID 1 no encontrado", exception.getMessage());
     }
 }
