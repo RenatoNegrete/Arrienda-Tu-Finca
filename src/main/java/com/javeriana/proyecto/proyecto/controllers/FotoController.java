@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,32 +22,27 @@ public class FotoController {
      @Autowired
   private FotoService fotoService;
 
-  @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
     public List<FotoDTO> get() {
         return fotoService.get();
     }
 
- @CrossOrigin
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoDTO get(@PathVariable long id) {
         return fotoService.get(id);
     }
 
-    @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoDTO save(@RequestBody FotoDTO fotoDTO) throws RuntimeException {
         return fotoService.save(fotoDTO);
     }
 
 
-    @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public FotoDTO update(@RequestBody FotoDTO fotoDTO) throws RuntimeException {
         return fotoService.update(fotoDTO);
     }
 
-    @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
         fotoService.delete(id);

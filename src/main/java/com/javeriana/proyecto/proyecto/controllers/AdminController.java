@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,37 +26,31 @@ public class AdminController {
     @Autowired
     private AdministradorService administradorService;
 
-    @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
     public List<AdminDTO> get() {
         return administradorService.get();
     }
     
-    @CrossOrigin
     @GetMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public AdminDTO get(@PathVariable long id) {
         return administradorService.get(id);
     }
 
-    @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public AdminDTO save(@RequestBody AdminDTO adminDTO) throws RuntimeException {
         return administradorService.save(adminDTO);
     }
     
-    @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public AdminDTO update(@RequestBody AdminDTO adminDTO) throws RuntimeException {
         return administradorService.update(adminDTO);
     }
 
-    @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
         administradorService.delete(id);
     }
 
-    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<AdminDTO> login(@RequestBody LoginRequest request) {
     

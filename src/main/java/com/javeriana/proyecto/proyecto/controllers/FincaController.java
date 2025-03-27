@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,49 +26,41 @@ public class FincaController {
     @Autowired
     private FincaService fincaService;
 
-    @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
     public List<FincaDTO> get() {
         return fincaService.get();
     }
     
-    @CrossOrigin
     @GetMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public FincaDTO get(@PathVariable long id) {
         return fincaService.get(id);
     }
 
-    @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public FincaDTO save(@RequestBody FincaDTO fincaDTO) {
         return fincaService.save(fincaDTO);
     }
     
-    @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public FincaDTO update(@RequestBody FincaDTO fincaDTO) {
         return fincaService.update(fincaDTO);
     }
 
-    @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
         fincaService.delete(id);
     }
 
-    @CrossOrigin
     @PostMapping("/admin/{idAdmin}/crear")
     public ResponseEntity<FincaDTO> create(@PathVariable long idAdmin, @RequestBody FincaDTO fincaDTO) {
         return ResponseEntity.ok(fincaService.createFinca(fincaDTO, idAdmin));
     }
 
-    @CrossOrigin
     @GetMapping("/admin/{idAdmin}")
     public ResponseEntity<List<FincaDTO>> getFincasByAdmin(@PathVariable long idAdmin) {
         return ResponseEntity.ok(fincaService.getFincasByAdministrador(idAdmin));
     }
 
-    @CrossOrigin
     @GetMapping("/departamento/{idDepartamento}")
     public ResponseEntity<List<FincaDTO>> getFincasByDepartamento(@PathVariable Long idDepartamento) {
         return ResponseEntity.ok(fincaService.getFincasByDepartamento(idDepartamento));

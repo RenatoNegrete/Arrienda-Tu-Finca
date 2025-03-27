@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,31 +22,26 @@ public class MunicipioController {
     @Autowired
     private MunicipioService MunicipioService;
 
-    @CrossOrigin
     @GetMapping( produces = MediaType.APPLICATION_JSON_VALUE )
     public List<MunicipioDTO> get() {
         return MunicipioService.get();
     }
     
-    @CrossOrigin
     @GetMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public MunicipioDTO get(@PathVariable long id) {
         return MunicipioService.get(id);
     }
 
-    @CrossOrigin
     @PostMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public MunicipioDTO save(@RequestBody MunicipioDTO MunicipioDTO) throws RuntimeException {
         return MunicipioService.save(MunicipioDTO);
     }
     
-    @CrossOrigin
     @PutMapping( produces = MediaType.APPLICATION_JSON_VALUE)
     public MunicipioDTO update(@RequestBody MunicipioDTO MunicipioDTO) throws RuntimeException {
         return MunicipioService.update(MunicipioDTO);
     }
 
-    @CrossOrigin
     @DeleteMapping( value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE )
     public void delete(@PathVariable long id) {
         MunicipioService.delete(id);
