@@ -1,6 +1,5 @@
 package com.javeriana.proyecto.proyecto.services;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -112,6 +111,7 @@ class SolicitudServiceTest {
 
     @Test
     void testSaveSolicitud_Success() {
+        // Configuración estrictamente necesaria
         when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
         when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
         when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
@@ -130,7 +130,10 @@ class SolicitudServiceTest {
     @Test
     void testSaveSolicitud_WrongStayException() {
         solicitudDTO.setFechallegada(LocalDate.of(2025, 4, 6));
-        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 1)); // Fecha de salida anterior a la de llegada
+        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 5)); // Fecha inválida
+
+        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador)); // Necesario para llegar a la lógica de excepción
+        when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
 
         WrongStayException exception = assertThrows(WrongStayException.class, () -> solicitudService.save(solicitudDTO));
 
