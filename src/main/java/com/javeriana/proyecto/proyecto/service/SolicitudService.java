@@ -70,16 +70,18 @@ public class SolicitudService {
     }
 
     public SolicitudDTO save(SolicitudDTO solicitudDTO) {
+
+        long diasEstancia = ChronoUnit.DAYS.between(solicitudDTO.getFechallegada(), solicitudDTO.getFechasalida());
+        if (diasEstancia <= 0) {
+            throw new WrongStayException("La fecha de salida debe ser posterior a la fecha de inicio");
+        }
+
         Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
                 .orElseThrow(() -> new NotFoundException(arrendadorException + solicitudDTO.getIdArrendador() + notFound));
 
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
                 .orElseThrow(() -> new NotFoundException(fincaException + solicitudDTO.getIdFinca() + notFound));
 
-        long diasEstancia = ChronoUnit.DAYS.between(solicitudDTO.getFechallegada(), solicitudDTO.getFechasalida());
-        if (diasEstancia <= 0) {
-            throw new WrongStayException("La fecha de salida debe ser posterior a la fecha de inicio");
-        }
         double valorTotal = diasEstancia * finca.getValorNoche();
 
         Solicitud solicitud = modelMapper.map(solicitudDTO, Solicitud.class);

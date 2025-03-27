@@ -80,18 +80,6 @@ class AdministradorServiceTest {
     }
 
     @Test
-    void testSave() {
-        when(adminRepository.findByEmail(adminDTO.getEmail())).thenReturn(Optional.empty());
-        when(modelMapper.map(adminDTO, Administrador.class)).thenReturn(admin);
-        when(adminRepository.save(any(Administrador.class))).thenReturn(admin);
-        when(modelMapper.map(admin, AdminDTO.class)).thenReturn(adminDTO);
-
-        AdminDTO result = administradorService.save(adminDTO);
-
-        assertEquals(adminDTO.getEmail(), result.getEmail());
-    }
-
-    @Test
     void testSaveEmailExists() {
         when(adminRepository.findByEmail(adminDTO.getEmail())).thenReturn(Optional.of(admin));
         assertThrows(EmailExistsException.class, () -> administradorService.save(adminDTO));

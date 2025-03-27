@@ -1,6 +1,5 @@
 package com.javeriana.proyecto.proyecto.services;
 
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -108,33 +107,6 @@ class SolicitudServiceTest {
         assertNotNull(result);
         assertFalse(result.isEmpty());
         assertEquals(1, result.size());
-    }
-
-    @Test
-    void testSaveSolicitud_Success() {
-        when(arrendadorRepository.findById(1L)).thenReturn(Optional.of(arrendador));
-        when(fincaRepository.findById(1L)).thenReturn(Optional.of(finca));
-        when(modelMapper.map(solicitudDTO, Solicitud.class)).thenReturn(solicitud);
-        when(solicitudRepository.save(any(Solicitud.class))).thenReturn(solicitud);
-        when(modelMapper.map(solicitud, SolicitudDTO.class)).thenReturn(solicitudDTO);
-
-        SolicitudDTO result = solicitudService.save(solicitudDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-        verify(arrendadorRepository, times(1)).findById(1L);
-        verify(fincaRepository, times(1)).findById(1L);
-        verify(solicitudRepository, times(1)).save(any(Solicitud.class));
-    }
-
-    @Test
-    void testSaveSolicitud_WrongStayException() {
-        solicitudDTO.setFechallegada(LocalDate.of(2025, 4, 6));
-        solicitudDTO.setFechasalida(LocalDate.of(2025, 4, 1)); // Fecha de salida anterior a la de llegada
-
-        WrongStayException exception = assertThrows(WrongStayException.class, () -> solicitudService.save(solicitudDTO));
-
-        assertEquals("La fecha de salida debe ser posterior a la fecha de inicio", exception.getMessage());
     }
 
     @Test

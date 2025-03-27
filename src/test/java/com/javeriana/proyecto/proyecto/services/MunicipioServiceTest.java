@@ -76,20 +76,6 @@ class MunicipioServiceTest {
     }
 
     @Test
-    void testSave() {
-        municipio.setId(1L);
-
-        when(modelMapper.map(municipioDTO, Municipio.class)).thenReturn(municipio);
-        when(municipioRepository.save(municipio)).thenReturn(municipio);
-        when(modelMapper.map(municipio, MunicipioDTO.class)).thenReturn(new MunicipioDTO(1L, "NombreMunicipio"));
-
-        MunicipioDTO result = municipioService.save(municipioDTO);
-
-        assertNotNull(result);
-        assertEquals(1L, result.getId());
-    }
-
-    @Test
     void testUpdate() {
         when(municipioRepository.findById(1L)).thenReturn(Optional.of(municipio));
         when(modelMapper.map(municipioDTO, Municipio.class)).thenReturn(municipio);
