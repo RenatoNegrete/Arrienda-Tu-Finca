@@ -25,7 +25,7 @@ public class FotoService {
         this.modelMapper = modelMapper;
     }
 
-    private String fotoException = "Foto with ID";
+    private String fotoException = "Foto with ID ";
 
     public FotoDTO get(long id) {
         Foto foto = fotoRepository.findById(id)
