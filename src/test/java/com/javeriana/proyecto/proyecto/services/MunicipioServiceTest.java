@@ -1,3 +1,4 @@
+package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,6 +18,7 @@ import com.javeriana.proyecto.proyecto.dto.MunicipioDTO;
 import com.javeriana.proyecto.proyecto.entidades.Municipio;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.MunicipioRepository;
+import com.javeriana.proyecto.proyecto.service.MunicipioService;
 
 @ExtendWith(MockitoExtension.class)
 class MunicipioServiceTest {

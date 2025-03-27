@@ -1,4 +1,4 @@
-package com.javeriana.proyecto.proyecto.service;
+package com.javeriana.proyecto.proyecto.services;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,6 +24,7 @@ import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.BancoRepository;
 import com.javeriana.proyecto.proyecto.repositorios.PagoRepository;
 import com.javeriana.proyecto.proyecto.repositorios.SolicitudRepository;
+import com.javeriana.proyecto.proyecto.service.PagoService;
 
 @ExtendWith(MockitoExtension.class)
 class PagoServiceTest {
@@ -61,7 +62,7 @@ class PagoServiceTest {
         pago.setId(1L);
         pago.setBanco(banco);
         pago.setSolicitud(solicitud);
-        pago.setValor(100.0);
+        pago.setValor(100);
         pago.setStatus(0);
         
         pagoDTO = new PagoDTO();

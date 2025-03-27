@@ -1,6 +1,8 @@
+package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -61,8 +63,8 @@ class SolicitudServiceTest {
         solicitudDTO.setId(1L);
         solicitudDTO.setIdArrendador(1L);
         solicitudDTO.setIdFinca(1L);
-        solicitudDTO.setFechallegada(LocalDateTime.now());
-        solicitudDTO.setFechasalida(LocalDateTime.now().plusDays(5));
+        solicitudDTO.setFechallegada(LocalDate.now());
+        solicitudDTO.setFechasalida(LocalDate.now().plusDays(5));
     }
 
     @Test

@@ -1,3 +1,4 @@
+package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -19,6 +20,7 @@ import com.javeriana.proyecto.proyecto.exception.AuthenticationException;
 import com.javeriana.proyecto.proyecto.exception.EmailExistsException;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.ArrendadorRepository;
+import com.javeriana.proyecto.proyecto.service.ArrendadorService;
 
 @ExtendWith(MockitoExtension.class)
 class ArrendadorServiceTest {

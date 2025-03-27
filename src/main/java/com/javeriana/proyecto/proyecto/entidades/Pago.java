@@ -31,6 +31,7 @@ public class Pago {
     private long id;
 
     private String numCuenta;
+    private double valor;
     private int status;
 
     @ManyToOne(fetch = FetchType.LAZY)

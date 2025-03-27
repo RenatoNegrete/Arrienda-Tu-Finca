@@ -1,3 +1,4 @@
+package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,6 +18,7 @@ import com.javeriana.proyecto.proyecto.dto.FincaDTO;
 import com.javeriana.proyecto.proyecto.entidades.*;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.*;
+import com.javeriana.proyecto.proyecto.service.FincaService;
 
 @ExtendWith(MockitoExtension.class)
 class FincaServiceTest {

@@ -1,3 +1,4 @@
+package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -17,6 +18,7 @@ import com.javeriana.proyecto.proyecto.dto.DepartamentoDTO;
 import com.javeriana.proyecto.proyecto.entidades.Departamento;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
 import com.javeriana.proyecto.proyecto.repositorios.DepartamentoRepository;
+import com.javeriana.proyecto.proyecto.service.DepartamentoService;
 
 @ExtendWith(MockitoExtension.class)
 public class DepartamentoServiceTest {
