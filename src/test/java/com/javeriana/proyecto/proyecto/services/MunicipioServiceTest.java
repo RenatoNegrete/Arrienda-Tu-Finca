@@ -66,7 +66,6 @@ class MunicipioServiceTest {
     @Test
     void testGetAll() {
         List<Municipio> municipios = Arrays.asList(municipio);
-        List<MunicipioDTO> municipioDTOs = Arrays.asList(municipioDTO);
 
         when(municipioRepository.findAll()).thenReturn(municipios);
         when(modelMapper.map(municipio, MunicipioDTO.class)).thenReturn(municipioDTO);

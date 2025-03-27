@@ -21,14 +21,18 @@ import com.javeriana.proyecto.proyecto.repositorios.SolicitudRepository;
 @Service
 public class PagoService {
     
-    @Autowired
     PagoRepository pagoRepository;
-    @Autowired
     BancoRepository bancoRepository;
-    @Autowired
     SolicitudRepository solicitudRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public PagoService(PagoRepository pagoRepository, BancoRepository bancoRepository, SolicitudRepository solicitudRepository, ModelMapper modelMapper) {
+        this.pagoRepository = pagoRepository;
+        this.bancoRepository = bancoRepository;
+        this.solicitudRepository = solicitudRepository;
+        this.modelMapper = modelMapper;
+    }
 
     private String pagoException = "Pago with ID";
     private String notFound = " not found";
@@ -51,7 +55,7 @@ public class PagoService {
             pagoDTO.setIdBanco(pago.getBanco() != null ? pago.getBanco().getId() : null);
             pagoDTO.setIdSolicitud(pago.getSolicitud() != null ? pago.getSolicitud().getId() : null);
             return pagoDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public PagoDTO save(PagoDTO pagoDTO) {

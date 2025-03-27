@@ -16,26 +16,29 @@ import com.javeriana.proyecto.proyecto.repositorios.FotoRepository;
 @Service
 public class FotoService {
     
-    @Autowired
     FotoRepository fotoRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public FotoService(FotoRepository fotoRepository, ModelMapper modelMapper) {
+        this.fotoRepository = fotoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     private String fotoException = "Foto with ID";
 
     public FotoDTO get(long id) {
         Foto foto = fotoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(fotoException + id + " not found"));
-        FotoDTO fotoDTO = modelMapper.map(foto, FotoDTO.class);
-
-        return fotoDTO;
+        
+        return modelMapper.map(foto, FotoDTO.class);
     }
 
 public List<FotoDTO> get() {
         List<Foto> fotos = (List<Foto>) fotoRepository.findAll();
         List<FotoDTO> fotoDtos = fotos.stream()
                                 .map(foto -> modelMapper.map(foto, FotoDTO.class))
-                                .collect(Collectors.toList());
+                                .toList();
         return fotoDtos;
     }
 

@@ -21,7 +21,7 @@ import com.javeriana.proyecto.proyecto.repositorios.DepartamentoRepository;
 import com.javeriana.proyecto.proyecto.service.DepartamentoService;
 
 @ExtendWith(MockitoExtension.class)
-public class DepartamentoServiceTest {
+class DepartamentoServiceTest {
 
     @Mock
     private DepartamentoRepository departamentoRepository;
@@ -67,7 +67,6 @@ public class DepartamentoServiceTest {
     @Test
     void testGetAll() {
         List<Departamento> departamentos = Arrays.asList(departamento);
-        List<DepartamentoDTO> departamentoDTOs = Arrays.asList(departamentoDTO);
 
         when(departamentoRepository.findAll()).thenReturn(departamentos);
         when(modelMapper.map(departamento, DepartamentoDTO.class)).thenReturn(departamentoDTO);

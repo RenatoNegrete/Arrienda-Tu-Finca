@@ -16,10 +16,14 @@ import com.javeriana.proyecto.proyecto.repositorios.DepartamentoRepository;
 @Service
 public class DepartamentoService {
 
-    @Autowired
     DepartamentoRepository departamentoRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public DepartamentoService(DepartamentoRepository departamentoRepository, ModelMapper modelMapper) {
+        this.departamentoRepository = departamentoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public DepartamentoDTO get(long id) {
         Departamento departamento = departamentoRepository.findById(id)
@@ -31,7 +35,7 @@ public class DepartamentoService {
         List<Departamento> departamentos = (List<Departamento>) departamentoRepository.findAll();
         List<DepartamentoDTO> departamentoDTOs = departamentos.stream()
                                                 .map(departamento -> modelMapper.map(departamento, DepartamentoDTO.class))
-                                                .collect(Collectors.toList());
+                                                .toList();
         return departamentoDTOs;
     }
 

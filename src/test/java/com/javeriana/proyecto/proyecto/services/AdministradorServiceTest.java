@@ -1,7 +1,5 @@
 package com.javeriana.proyecto.proyecto.services;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
@@ -70,7 +68,6 @@ class AdministradorServiceTest {
     @Test
     void testGetAll() {
         List<Administrador> admins = Arrays.asList(admin);
-        List<AdminDTO> adminsDTO = Arrays.asList(adminDTO);
 
         when(adminRepository.findAll()).thenReturn(admins);
         when(modelMapper.map(admin, AdminDTO.class)).thenReturn(adminDTO);

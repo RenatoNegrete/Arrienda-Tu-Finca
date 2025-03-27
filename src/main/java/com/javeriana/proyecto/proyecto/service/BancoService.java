@@ -16,10 +16,14 @@ import com.javeriana.proyecto.proyecto.repositorios.BancoRepository;
 @Service
 public class BancoService {
 
-    @Autowired
     BancoRepository BancoRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public BancoService(BancoRepository bancoRepository, ModelMapper modelMapper) {
+        this.BancoRepository = bancoRepository;
+        this.modelMapper = modelMapper;
+    }
 
     private String bancoException = "Banco with ID ";
     private String notFound = " not found";
@@ -34,7 +38,7 @@ public class BancoService {
         List<Banco> Bancoes = (List<Banco>) BancoRepository.findAll();
         List<BancoDTO> BancoDTOs = Bancoes.stream()
                                                     .map(Banco -> modelMapper.map(Banco, BancoDTO.class))
-                                                    .collect(Collectors.toList());
+                                                    .toList();
         return BancoDTOs;
     }
 

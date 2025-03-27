@@ -18,10 +18,14 @@ import com.javeriana.proyecto.proyecto.repositorios.AdministradorRepository;
 @Service
 public class AdministradorService {
 
-    @Autowired
     AdministradorRepository adminRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public AdministradorService(AdministradorRepository administradorRepository, ModelMapper modelMapper) {
+        this.adminRepository = administradorRepository;
+        this.modelMapper = modelMapper;
+    }
 
     private String adminException = "Administrador with ID ";
 
@@ -35,7 +39,7 @@ public class AdministradorService {
         List<Administrador> administradors = adminRepository.findAll();
         return administradors.stream()
                                                 .map(administrador -> modelMapper.map(administrador, AdminDTO.class))
-                                                .collect(Collectors.toList());
+                                                .toList();
     }
 
     public AdminDTO save(AdminDTO adminDTO) {

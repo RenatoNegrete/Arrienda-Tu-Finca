@@ -24,18 +24,21 @@ import com.javeriana.proyecto.proyecto.repositorios.MunicipioRepository;
 @Service
 public class FincaService {
 
-    @Autowired
     FincaRepository fincaRepository;
-    @Autowired
-    private AdministradorRepository administradorRepository;
-    @Autowired
-    private DepartamentoRepository departamentoRepository;
-    @Autowired
-    private MunicipioRepository municipioRepository;
-    @Autowired
-    private FotoRepository fotoRepository;
-    @Autowired
+    AdministradorRepository administradorRepository;
+    DepartamentoRepository departamentoRepository;
+    MunicipioRepository municipioRepository;
+    FotoRepository fotoRepository;
     ModelMapper modelMapper;
+
+    @Autowired
+    public FincaService(FincaRepository fincaRepository, AdministradorRepository administradorRepository, DepartamentoRepository departamentoRepository, MunicipioRepository municipioRepository, FotoRepository fotoRepository, ModelMapper modelMapper) {
+        this.fincaRepository = fincaRepository;
+        this.administradorRepository = administradorRepository;
+        this.departamentoRepository = departamentoRepository;
+        this.municipioRepository = municipioRepository;
+        this.fotoRepository = fotoRepository;
+    }
 
     private String notFound = " not found";
     private String notEncontrado = " no encontrado";
@@ -68,7 +71,7 @@ public class FincaService {
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
             fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
             return fincaDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
     
 
@@ -180,7 +183,7 @@ public class FincaService {
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
             fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
             return fincaDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public List<FincaDTO> getFincasByDepartamento(Long idDepartamento) {
@@ -193,7 +196,7 @@ public class FincaService {
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
             fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
             return fincaDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
 }

@@ -66,7 +66,7 @@ public class SolicitudService {
             solicitudDTO.setIdFinca(solicitud.getFinca() != null ? solicitud.getFinca().getId() : null);
             solicitudDTO.setIdPago(solicitud.getPago() != null ? solicitud.getPago().getId() : null);
             return solicitudDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public SolicitudDTO save(SolicitudDTO solicitudDTO) {
@@ -171,7 +171,7 @@ public class SolicitudService {
             solicitudDTO.setIdFinca(solicitud.getFinca() != null ? solicitud.getFinca().getId() : null);
             solicitudDTO.setIdPago(solicitud.getPago() != null ? solicitud.getPago().getId() : null);
             return solicitudDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     public List<SolicitudDTO> getSolicitudesByFinca(Long idFinca) {
@@ -183,7 +183,7 @@ public class SolicitudService {
             solicitudDTO.setIdFinca(solicitud.getFinca() != null ? solicitud.getFinca().getId() : null);
             solicitudDTO.setIdPago(solicitud.getPago() != null ? solicitud.getPago().getId() : null);
             return solicitudDTO;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
 }

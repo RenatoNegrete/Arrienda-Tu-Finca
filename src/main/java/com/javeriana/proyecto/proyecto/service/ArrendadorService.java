@@ -19,10 +19,14 @@ import com.javeriana.proyecto.proyecto.repositorios.ArrendadorRepository;
 
 public class ArrendadorService {
 
-    @Autowired
     ArrendadorRepository arrendadorRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public ArrendadorService(ArrendadorRepository arrendadorRepository, ModelMapper modelMapper) {
+        this.arrendadorRepository = arrendadorRepository;
+        this.modelMapper = modelMapper;
+    }
 
     private String arrendadorException = "Arrendador with ID ";
 
@@ -36,7 +40,7 @@ public class ArrendadorService {
         List<Arrendador> arrendadores = (List<Arrendador>) arrendadorRepository.findAll();
         List<ArrendadorDTO> arrendadorDTOs = arrendadores.stream()
                                                     .map(Arrendador -> modelMapper.map(Arrendador, ArrendadorDTO.class))
-                                                    .collect(Collectors.toList());
+                                                    .toList();
         return arrendadorDTOs;
     }
 

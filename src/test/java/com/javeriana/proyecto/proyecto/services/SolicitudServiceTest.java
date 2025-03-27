@@ -20,7 +20,6 @@ import org.modelmapper.ModelMapper;
 import com.javeriana.proyecto.proyecto.dto.SolicitudDTO;
 import com.javeriana.proyecto.proyecto.entidades.*;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
-import com.javeriana.proyecto.proyecto.exception.WrongStayException;
 import com.javeriana.proyecto.proyecto.repositorios.*;
 import com.javeriana.proyecto.proyecto.service.*;
 

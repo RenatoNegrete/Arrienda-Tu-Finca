@@ -16,10 +16,14 @@ import com.javeriana.proyecto.proyecto.repositorios.MunicipioRepository;
 @Service
 public class MunicipioService {
     
-    @Autowired
     MunicipioRepository municipioRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public MunicipioService(MunicipioRepository municipioRepository, ModelMapper modelMapper) {
+        this.municipioRepository = municipioRepository;
+        this.modelMapper = modelMapper;
+    }
     
     public MunicipioDTO get(long id) {
         Municipio municipio = municipioRepository.findById(id)
@@ -31,7 +35,7 @@ public class MunicipioService {
         List<Municipio> Municipios = (List<Municipio>) municipioRepository.findAll();
         List<MunicipioDTO> MunicipioDTOs = Municipios.stream()
                                                 .map(Municipio -> modelMapper.map(Municipio, MunicipioDTO.class))
-                                                .collect(Collectors.toList());
+                                                .toList();
         return MunicipioDTOs;
     }
 
