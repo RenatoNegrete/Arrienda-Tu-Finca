@@ -30,9 +30,12 @@ public class PagoService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String pagoException = "Pago with ID";
+    private String notFound = " not found";
+
     public PagoDTO get(long id) {
         Pago pago = pagoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Pago with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(pagoException + id + notFound));
         PagoDTO pagoDTO = modelMapper.map(pago, PagoDTO.class);
         pagoDTO.setIdBanco(pago.getBanco() != null ? pago.getBanco().getId() : null);
         pagoDTO.setIdSolicitud(pago.getSolicitud() != null ? pago.getSolicitud().getId() : null);
@@ -54,10 +57,10 @@ public class PagoService {
     public PagoDTO save(PagoDTO pagoDTO) {
 
         Banco banco = bancoRepository.findById(pagoDTO.getIdBanco())
-                .orElseThrow(() -> new NotFoundException("Banco with ID " + pagoDTO.getIdBanco() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Banco with ID " + pagoDTO.getIdBanco() + notFound));
 
         Solicitud solicitud = solicitudRepository.findById(pagoDTO.getIdSolicitud())
-            .orElseThrow(() -> new NotFoundException("Solicitud with ID " + pagoDTO.getIdSolicitud() + " not found"));
+            .orElseThrow(() -> new NotFoundException("Solicitud with ID " + pagoDTO.getIdSolicitud() + notFound));
 
         if (pagoDTO.getValor() != solicitud.getValor()) {
             throw new InvalidPaymentException("El valor del pago no coincide con el valor de la solicitud.");
@@ -75,14 +78,14 @@ public class PagoService {
     public PagoDTO update(PagoDTO pagoDTO) throws RuntimeException {
         Optional<Pago> pagoOptional = pagoRepository.findById(pagoDTO.getId());
         if (pagoOptional.isEmpty()) {
-            throw new NotFoundException("Pago with ID " + pagoDTO.getId() + " not found");
+            throw new NotFoundException(pagoException + pagoDTO.getId() + notFound);
         }
 
         Banco banco = bancoRepository.findById(pagoDTO.getIdBanco())
-                .orElseThrow(() -> new NotFoundException("Banco with ID " + pagoDTO.getIdBanco() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Banco with ID " + pagoDTO.getIdBanco() + notFound));
 
         Solicitud solicitud = solicitudRepository.findById(pagoDTO.getIdSolicitud())
-                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + pagoDTO.getIdSolicitud() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + pagoDTO.getIdSolicitud() + notFound));
 
         Pago pago = pagoOptional.get();
         pago = modelMapper.map(pagoDTO, Pago.class);
@@ -94,7 +97,7 @@ public class PagoService {
 
     public void delete(long id) {
         Pago pago = pagoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Pago with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(pagoException + id + " no encontrado"));
         pago.setStatus(1);
         pagoRepository.save(pago);
     }

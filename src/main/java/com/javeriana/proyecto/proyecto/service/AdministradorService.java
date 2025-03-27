@@ -23,18 +23,19 @@ public class AdministradorService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String adminException = "Administrador with ID ";
+
     public AdminDTO get(long id) {
         Administrador administrador = adminRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Administrador with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(adminException + id + " not found"));
         return modelMapper.map(administrador, AdminDTO.class);
     }
 
     public List<AdminDTO> get() {
-        List<Administrador> administradors = (List<Administrador>) adminRepository.findAll();
-        List<AdminDTO> adminsDTOs = administradors.stream()
+        List<Administrador> administradors = adminRepository.findAll();
+        return administradors.stream()
                                                 .map(administrador -> modelMapper.map(administrador, AdminDTO.class))
                                                 .collect(Collectors.toList());
-        return adminsDTOs;
     }
 
     public AdminDTO save(AdminDTO adminDTO) {
@@ -53,7 +54,7 @@ public class AdministradorService {
     public AdminDTO update(AdminDTO adminDTO) throws RuntimeException {
         Optional<Administrador> adminOptional = adminRepository.findById(adminDTO.getId());
         if (adminOptional.isEmpty()) {
-            throw new NotFoundException("Administrador with ID " + adminDTO.getId() + " not found");
+            throw new NotFoundException(adminException + adminDTO.getId() + " not found");
         }
         Administrador administrador = adminOptional.get();
         administrador = modelMapper.map(adminDTO, Administrador.class);
@@ -64,7 +65,7 @@ public class AdministradorService {
 
     public void delete(long id) {
         Administrador administrador = adminRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Administrador with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(adminException + id + " no encontrado"));
         administrador.setStatus(1);
         adminRepository.save(administrador);
     }

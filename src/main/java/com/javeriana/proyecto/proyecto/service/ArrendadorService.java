@@ -24,9 +24,11 @@ public class ArrendadorService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String arrendadorException = "Arrendador with ID ";
+
     public ArrendadorDTO get(long id) {
         Arrendador arrendador = arrendadorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(arrendadorException + id + " not found"));
         return modelMapper.map(arrendador, ArrendadorDTO.class);
     }
 
@@ -54,7 +56,7 @@ public class ArrendadorService {
     public ArrendadorDTO update(ArrendadorDTO arrendadorDTO) {
         Optional<Arrendador> arrendadorOptional = arrendadorRepository.findById(arrendadorDTO.getId());
         if (arrendadorOptional.isEmpty()) {
-            throw new NotFoundException("Arrendador with ID " + arrendadorDTO.getId() + " not found");
+            throw new NotFoundException(arrendadorException + arrendadorDTO.getId() + " not found");
         }
         Arrendador arrendador = arrendadorOptional.get();
         arrendador = modelMapper.map(arrendadorDTO, Arrendador.class);
@@ -65,7 +67,7 @@ public class ArrendadorService {
 
     public void delete(long id) {
         Arrendador arrendador = arrendadorRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(arrendadorException + id + " no encontrado"));
         arrendador.setStatus(1);
         arrendadorRepository.save(arrendador);
     }

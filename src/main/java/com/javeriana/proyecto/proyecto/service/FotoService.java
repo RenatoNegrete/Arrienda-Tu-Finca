@@ -21,9 +21,11 @@ public class FotoService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String fotoException = "Foto with ID";
+
     public FotoDTO get(long id) {
         Foto foto = fotoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Foto with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(fotoException + id + " not found"));
         FotoDTO fotoDTO = modelMapper.map(foto, FotoDTO.class);
 
         return fotoDTO;
@@ -50,7 +52,7 @@ public List<FotoDTO> get() {
     public FotoDTO update(FotoDTO fotoDTO) throws RuntimeException {
         Optional<Foto> fotoOptional = fotoRepository.findById(fotoDTO.getId());
         if (fotoOptional.isEmpty()) {
-            throw new NotFoundException("Foto with ID " + fotoDTO.getId() + " not found");
+            throw new NotFoundException(fotoException + fotoDTO.getId() + " not found");
         }
         Foto foto = fotoOptional.get();
         foto = modelMapper.map(fotoDTO, Foto.class);
@@ -60,7 +62,7 @@ public List<FotoDTO> get() {
 
     public void delete(long id) {
         Foto foto = fotoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Foto with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(fotoException + id + " no encontrado"));
         foto.setStatus(1);
         fotoRepository.save(foto);
     }

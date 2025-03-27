@@ -21,9 +21,12 @@ public class BancoService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String bancoException = "Banco with ID ";
+    private String notFound = " not found";
+
     public BancoDTO get(long id) {
         Banco banco = BancoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Banco with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(bancoException + id + notFound));
         return modelMapper.map(banco, BancoDTO.class);
     }
 
@@ -45,7 +48,7 @@ public class BancoService {
     public BancoDTO update(BancoDTO BancoDTO) {
         Optional<Banco> BancoOptional = BancoRepository.findById(BancoDTO.getId());
         if (BancoOptional.isEmpty()) {
-            throw new NotFoundException("Banco with ID " + BancoDTO.getId() + " not found");
+            throw new NotFoundException(bancoException + BancoDTO.getId() + notFound);
         }
         Banco Banco = BancoOptional.get();
         Banco = modelMapper.map(BancoDTO, Banco.class);
@@ -55,7 +58,7 @@ public class BancoService {
 
     public void delete(long id) {
         if (!BancoRepository.existsById(id)) {
-            throw new NotFoundException("Banco with ID " + id + " not found");
+            throw new NotFoundException(bancoException + id + notFound);
         }
         BancoRepository.deleteById(id);
     }

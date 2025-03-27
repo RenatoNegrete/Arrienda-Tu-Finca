@@ -25,20 +25,29 @@ import com.javeriana.proyecto.proyecto.repositorios.SolicitudRepository;
 @Service
 public class SolicitudService {
     
-    @Autowired
     SolicitudRepository solicitudRepository;
-    @Autowired
     ArrendadorRepository arrendadorRepository;
-    @Autowired
     FincaRepository fincaRepository;
-    @Autowired
     PagoRepository pagoRepository;
-    @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    public SolicitudService(SolicitudRepository solicitudRepository, ArrendadorRepository arrendadorRepository, FincaRepository fincaRepository, PagoRepository pagoRepository, ModelMapper modelMapper) {
+        this.solicitudRepository = solicitudRepository;
+        this.arrendadorRepository = arrendadorRepository;
+        this.fincaRepository = fincaRepository;
+        this.pagoRepository = pagoRepository;
+        this.modelMapper = modelMapper;
+    }
+
+    private String notFound = " not found";
+    private String solicitudException = "Solicitud with ID ";
+    private String arrendadorException = "Arrendador with ID ";
+    private String fincaException = "Finca with ID ";
 
     public SolicitudDTO get(long id) {
         Solicitud solicitud = solicitudRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(solicitudException + id + notFound));
         
         SolicitudDTO solicitudDTO = modelMapper.map(solicitud, SolicitudDTO.class);
         solicitudDTO.setIdArrendador(solicitud.getArrendador() != null ? solicitud.getArrendador().getId() : null);
@@ -62,10 +71,10 @@ public class SolicitudService {
 
     public SolicitudDTO save(SolicitudDTO solicitudDTO) {
         Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + solicitudDTO.getIdArrendador() + " not found"));
+                .orElseThrow(() -> new NotFoundException(arrendadorException + solicitudDTO.getIdArrendador() + notFound));
 
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
+                .orElseThrow(() -> new NotFoundException(fincaException + solicitudDTO.getIdFinca() + notFound));
 
         long diasEstancia = ChronoUnit.DAYS.between(solicitudDTO.getFechallegada(), solicitudDTO.getFechasalida());
         if (diasEstancia <= 0) {
@@ -90,19 +99,19 @@ public class SolicitudService {
     public SolicitudDTO update(SolicitudDTO solicitudDTO) throws RuntimeException {
         Optional<Solicitud> solicitudOptional = solicitudRepository.findById(solicitudDTO.getId());
         if (solicitudOptional.isEmpty()) {
-            throw new NotFoundException("Solicitud with ID " + solicitudDTO.getId() + " not found");
+            throw new NotFoundException(solicitudException + solicitudDTO.getId() + notFound);
         }
 
         Arrendador arrendador = arrendadorRepository.findById(solicitudDTO.getIdArrendador())
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + solicitudDTO.getIdArrendador() + " not found"));
+                .orElseThrow(() -> new NotFoundException(arrendadorException + solicitudDTO.getIdArrendador() + notFound));
 
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
+                .orElseThrow(() -> new NotFoundException(fincaException + solicitudDTO.getIdFinca() + notFound));
 
         Pago pago = null;
         if (solicitudDTO.getIdPago() != null) {
             pagoRepository.findById(solicitudDTO.getIdPago())
-                .orElseThrow(() -> new NotFoundException("Pago with ID " + solicitudDTO.getIdPago() + " not found"));
+                .orElseThrow(() -> new NotFoundException("Pago with ID " + solicitudDTO.getIdPago() + notFound));
         }
 
         Solicitud solicitud = solicitudOptional.get();
@@ -117,7 +126,7 @@ public class SolicitudService {
 
     public void delete(long id) {
         Solicitud solicitud = solicitudRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Solicitud with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(solicitudException + id + notFound));
         solicitud.setStatus(1);
         solicitudRepository.save(solicitud);
     }
@@ -125,10 +134,10 @@ public class SolicitudService {
     public SolicitudDTO createSolicitud(SolicitudDTO solicitudDTO, long idArrendador) {
 
         Arrendador arrendador = arrendadorRepository.findById(idArrendador)
-                .orElseThrow(() -> new NotFoundException("Arrendador with ID " + idArrendador + " not found"));
+                .orElseThrow(() -> new NotFoundException(arrendadorException + idArrendador + notFound));
 
         Finca finca = fincaRepository.findById(solicitudDTO.getIdFinca())
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + solicitudDTO.getIdFinca() + " not found"));
+                .orElseThrow(() -> new NotFoundException(fincaException + solicitudDTO.getIdFinca() + notFound));
 
         long diasEstancia = ChronoUnit.DAYS.between(solicitudDTO.getFechallegada(), solicitudDTO.getFechasalida());
         if (diasEstancia <= 0) {

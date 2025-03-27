@@ -37,9 +37,17 @@ public class FincaService {
     @Autowired
     ModelMapper modelMapper;
 
+    private String notFound = " not found";
+    private String notEncontrado = " no encontrado";
+    private String fincaException = "Finca with ID ";
+    private String adminException = "Administrador with ID ";
+    private String departamentoException = "Departamento with ID ";
+    private String municipioException = "Municipio with ID ";
+    private String fotoException = "Foto with ID ";
+
     public FincaDTO get(long id) {
         Finca finca = fincaRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException(fincaException + id + notFound));
         
         FincaDTO fincaDTO = modelMapper.map(finca, FincaDTO.class);
         fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
@@ -67,18 +75,18 @@ public class FincaService {
     public FincaDTO save(FincaDTO fincaDTO) {
 
         Administrador administrador = administradorRepository.findById(fincaDTO.getIdAdministrador())
-                .orElseThrow(() -> new NotFoundException("Administrador with ID " + fincaDTO.getIdAdministrador() + " not found"));
+                .orElseThrow(() -> new NotFoundException(adminException + fincaDTO.getIdAdministrador() + notFound));
 
         Departamento departamento = departamentoRepository.findById(fincaDTO.getIdDepartamento())
-                .orElseThrow(() -> new NotFoundException("Departamento with ID " + fincaDTO.getIdDepartamento() + " not found"));
+                .orElseThrow(() -> new NotFoundException(departamentoException + fincaDTO.getIdDepartamento() + notFound));
 
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
-                .orElseThrow(() -> new NotFoundException("Municipio with ID " + fincaDTO.getIdMunicipio() + " not found"));
+                .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
         Foto foto = null;
         if (fincaDTO.getIdFoto() != null) {
             foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException("Foto with ID " + fincaDTO.getIdFoto() + " not found"));
+                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
         }
 
         Finca finca = modelMapper.map(fincaDTO, Finca.class);
@@ -95,22 +103,22 @@ public class FincaService {
     public FincaDTO update(FincaDTO fincaDTO) throws RuntimeException {
         Optional<Finca> fincaOptional = fincaRepository.findById(fincaDTO.getId());
         if (fincaOptional.isEmpty()) {
-            throw new NotFoundException("Finca with ID " + fincaDTO.getId() + " not found");
+            throw new NotFoundException(fincaException + fincaDTO.getId() + notFound);
         }
 
         Administrador administrador = administradorRepository.findById(fincaDTO.getIdAdministrador())
-                .orElseThrow(() -> new NotFoundException("Administrador with ID " + fincaDTO.getIdAdministrador() + " not found"));
+                .orElseThrow(() -> new NotFoundException(adminException + fincaDTO.getIdAdministrador() + notFound));
 
         Departamento departamento = departamentoRepository.findById(fincaDTO.getIdDepartamento())
-                .orElseThrow(() -> new NotFoundException("Departamento with ID " + fincaDTO.getIdDepartamento() + " not found"));
+                .orElseThrow(() -> new NotFoundException(departamentoException + fincaDTO.getIdDepartamento() + notFound));
 
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
-                .orElseThrow(() -> new NotFoundException("Municipio with ID " + fincaDTO.getIdMunicipio() + " not found"));
+                .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
         Foto foto = null;
         if (fincaDTO.getIdFoto() != null) {
             foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException("Foto with ID " + fincaDTO.getIdFoto() + " not found"));
+                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
         }
 
         Finca finca = fincaOptional.get();
@@ -126,25 +134,25 @@ public class FincaService {
 
     public void delete(long id) {
         Finca finca = fincaRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Finca with ID " + id + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(fincaException + id + notEncontrado));
         finca.setStatus(1);
         fincaRepository.save(finca);
     }
 
     public FincaDTO createFinca(FincaDTO fincaDTO, long idAdmin) {
         Administrador administrador = administradorRepository.findById(idAdmin)
-                .orElseThrow(() -> new NotFoundException("Administrdor with ID " + idAdmin + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(adminException + idAdmin + notEncontrado));
 
         Departamento departamento = departamentoRepository.findById(fincaDTO.getIdDepartamento())
-                .orElseThrow(() -> new NotFoundException("Departamento with ID " + fincaDTO.getIdDepartamento() + " not found"));
+                .orElseThrow(() -> new NotFoundException(departamentoException + fincaDTO.getIdDepartamento() + notFound));
 
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
-                .orElseThrow(() -> new NotFoundException("Municipio with ID " + fincaDTO.getIdMunicipio() + " not found"));
+                .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
         Foto foto = null;
         if (fincaDTO.getIdFoto() != null) {
             foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException("Foto with ID " + fincaDTO.getIdFoto() + " not found"));
+                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
         }
         
         Finca finca = modelMapper.map(fincaDTO, Finca.class);
@@ -161,7 +169,7 @@ public class FincaService {
 
     public List<FincaDTO> getFincasByAdministrador(long idAdmin) {
         Administrador administrador = administradorRepository.findById(idAdmin)
-                .orElseThrow(() -> new NotFoundException("Administrdor with ID " + idAdmin + " no encontrado"));
+                .orElseThrow(() -> new NotFoundException(adminException + idAdmin + notEncontrado));
     
         List<Finca> fincas = fincaRepository.findByAdministrador(administrador);
         

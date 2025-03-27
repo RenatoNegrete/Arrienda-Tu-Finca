@@ -15,11 +15,11 @@ import com.javeriana.proyecto.proyecto.repositorios.MunicipioRepository;
 
 @Service
 public class MunicipioService {
-      @Autowired
+    
+    @Autowired
     MunicipioRepository municipioRepository;
     @Autowired
     ModelMapper modelMapper;
-
     
     public MunicipioDTO get(long id) {
         Municipio municipio = municipioRepository.findById(id)
