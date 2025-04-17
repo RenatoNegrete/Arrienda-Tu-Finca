@@ -10,20 +10,27 @@ import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.FotoDTO;
 import com.javeriana.proyecto.proyecto.entidades.Foto;
+import com.javeriana.proyecto.proyecto.entidades.Finca;
 import com.javeriana.proyecto.proyecto.exception.NotFoundException;
+import com.javeriana.proyecto.proyecto.repositorios.FincaRepository;
 import com.javeriana.proyecto.proyecto.repositorios.FotoRepository;
 
 @Service
 public class FotoService {
     
     FotoRepository fotoRepository;
+    FincaRepository fincaRepository;
     ModelMapper modelMapper;
 
     @Autowired
-    public FotoService(FotoRepository fotoRepository, ModelMapper modelMapper) {
+    public FotoService(FotoRepository fotoRepository, FincaRepository fincaRepository, ModelMapper modelMapper) {
         this.fotoRepository = fotoRepository;
+        this.fincaRepository = fincaRepository;
         this.modelMapper = modelMapper;
     }
+
+    private String fincaException = "Finca with ID ";
+    private String notFound = " not found";
 
     private String fotoException = "Foto with ID ";
 
@@ -31,20 +38,30 @@ public class FotoService {
         Foto foto = fotoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(fotoException + id + " not found"));
         
-        return modelMapper.map(foto, FotoDTO.class);
+        FotoDTO fotoDTO = modelMapper.map(foto, FotoDTO.class);
+        fotoDTO.setIdFinca(foto.getFinca() != null ? foto.getFinca().getId() : null);
+
+        return fotoDTO;
     }
 
     public List<FotoDTO> get() {
         List<Foto> fotos = (List<Foto>) fotoRepository.findAll();
-        List<FotoDTO> fotoDtos = fotos.stream()
-                                .map(foto -> modelMapper.map(foto, FotoDTO.class))
-                                .toList();
-        return fotoDtos;
+        
+        return fotos.stream().map(foto -> {
+            FotoDTO fotoDTO = modelMapper.map(foto, FotoDTO.class);
+            fotoDTO.setIdFinca(foto.getFinca() != null ? foto.getFinca().getId() : null);
+            return fotoDTO;
+        }).toList();
     }
 
     public FotoDTO save(FotoDTO fotoDTO) {
+
+        Finca finca = fincaRepository.findById(fotoDTO.getIdFinca())
+            .orElseThrow(() -> new NotFoundException(fincaException + fotoDTO.getIdFinca() + notFound));
+
         Foto foto = modelMapper.map(fotoDTO, Foto.class);
         foto.setImagenUrl(fotoDTO.getImagenUrl());
+        foto.setFinca(finca);
         foto = fotoRepository.save(foto);
         fotoDTO.setId(foto.getId());
         return fotoDTO;
@@ -55,10 +72,17 @@ public class FotoService {
         if (fotoOptional.isEmpty()) {
             throw new NotFoundException(fotoException + fotoDTO.getId() + " not found");
         }
+
+        Finca finca = fincaRepository.findById(fotoDTO.getIdFinca())
+            .orElseThrow(() -> new NotFoundException(fincaException + fotoDTO.getIdFinca() + notFound));
+
         Foto foto = fotoOptional.get();
         foto = modelMapper.map(fotoDTO, Foto.class);
+        foto.setFinca(finca);
         foto = fotoRepository.save(foto);
-        return modelMapper.map(foto, FotoDTO.class);
+        FotoDTO fotoDTO2 = modelMapper.map(foto, FotoDTO.class);
+        fotoDTO2.setIdFinca(foto.getFinca().getId());
+        return fotoDTO2;
     }
 
     public void delete(long id) {

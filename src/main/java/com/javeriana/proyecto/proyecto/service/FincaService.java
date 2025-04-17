@@ -118,7 +118,11 @@ public class FincaService {
         finca.setMunicipio(municipio);
         finca.setStatus(0);
         finca = fincaRepository.save(finca);
-        return modelMapper.map(finca, FincaDTO.class);
+        FincaDTO resp = modelMapper.map(finca, FincaDTO.class);
+        resp.setIdAdministrador(finca.getAdministrador().getId());
+        resp.setIdDepartamento(finca.getDepartamento().getId());
+        resp.setIdMunicipio(finca.getMunicipio().getId());
+        return resp;
     }
 
     public void delete(long id) {

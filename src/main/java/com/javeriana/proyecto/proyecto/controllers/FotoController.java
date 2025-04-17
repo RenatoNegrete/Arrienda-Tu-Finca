@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.javeriana.proyecto.proyecto.dto.FotoDTO;
 import com.javeriana.proyecto.proyecto.service.FotoService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
