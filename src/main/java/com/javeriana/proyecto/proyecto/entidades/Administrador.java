@@ -44,4 +44,7 @@ public class Administrador {
     @OneToMany(mappedBy = "administrador", fetch = FetchType.LAZY)
     private List<Finca> fincas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "administrador", fetch = FetchType.LAZY)
+    private List<CalificacionAdministrador> calificaciones = new ArrayList<>();
+
 }

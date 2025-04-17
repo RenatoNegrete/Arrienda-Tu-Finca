@@ -57,7 +57,6 @@ public class FincaService {
         fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
         fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
         fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
-        fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
 
         return fincaDTO;
     }
@@ -70,7 +69,6 @@ public class FincaService {
             fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
             fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
-            fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
             return fincaDTO;
         }).toList();
     }
@@ -87,17 +85,11 @@ public class FincaService {
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
                 .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
-        Foto foto = null;
-        if (fincaDTO.getIdFoto() != null) {
-            foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
-        }
 
         Finca finca = modelMapper.map(fincaDTO, Finca.class);
         finca.setAdministrador(administrador);
         finca.setDepartamento(departamento);
         finca.setMunicipio(municipio);
-        finca.setFoto(foto);
         finca.setStatus(0);
         finca = fincaRepository.save(finca);
         fincaDTO.setId(finca.getId());
@@ -119,18 +111,11 @@ public class FincaService {
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
                 .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
-        Foto foto = null;
-        if (fincaDTO.getIdFoto() != null) {
-            foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
-        }
-
         Finca finca = fincaOptional.get();
         finca = modelMapper.map(fincaDTO, Finca.class);
         finca.setAdministrador(administrador);
         finca.setDepartamento(departamento);
         finca.setMunicipio(municipio);
-        finca.setFoto(foto);
         finca.setStatus(0);
         finca = fincaRepository.save(finca);
         return modelMapper.map(finca, FincaDTO.class);
@@ -153,18 +138,12 @@ public class FincaService {
         Municipio municipio = municipioRepository.findById(fincaDTO.getIdMunicipio())
                 .orElseThrow(() -> new NotFoundException(municipioException + fincaDTO.getIdMunicipio() + notFound));
 
-        Foto foto = null;
-        if (fincaDTO.getIdFoto() != null) {
-            foto = fotoRepository.findById(fincaDTO.getIdFoto())
-                    .orElseThrow(() -> new NotFoundException(fotoException + fincaDTO.getIdFoto() + notFound));
-        }
         
         Finca finca = modelMapper.map(fincaDTO, Finca.class);
         
         finca.setAdministrador(administrador);
         finca.setDepartamento(departamento);
         finca.setMunicipio(municipio);
-        finca.setFoto(foto);
         finca.setStatus(0);
         finca = fincaRepository.save(finca);
 
@@ -182,7 +161,6 @@ public class FincaService {
             fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
             fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
-            fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
             return fincaDTO;
         }).toList();
     }
@@ -195,7 +173,30 @@ public class FincaService {
             fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
             fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
             fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
-            fincaDTO.setIdFoto(finca.getFoto() != null ? finca.getFoto().getId() : null);
+            return fincaDTO;
+        }).toList();
+    }
+
+    public List<FincaDTO> getFincasByNombre(String name) {
+        List<Finca> fincas = fincaRepository.findByNombre(name);
+
+        return fincas.stream().map(finca -> {
+            FincaDTO fincaDTO = modelMapper.map(finca, FincaDTO.class);
+            fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
+            fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
+            fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
+            return fincaDTO;
+        }).toList();
+    }
+
+    public List<FincaDTO> getFincasByHabitaciones(int habitaciones) {
+        List<Finca> fincas = fincaRepository.findByHabitaciones(habitaciones);
+
+        return fincas.stream().map(finca -> {
+            FincaDTO fincaDTO = modelMapper.map(finca, FincaDTO.class);
+            fincaDTO.setIdAdministrador(finca.getAdministrador() != null ? finca.getAdministrador().getId() : null);
+            fincaDTO.setIdDepartamento(finca.getDepartamento() != null ? finca.getDepartamento().getId() : null);
+            fincaDTO.setIdMunicipio(finca.getMunicipio() != null ? finca.getMunicipio().getId() : null);
             return fincaDTO;
         }).toList();
     }

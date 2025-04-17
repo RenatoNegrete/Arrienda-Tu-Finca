@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.javeriana.proyecto.proyecto.dto.FotoDTO;
 import com.javeriana.proyecto.proyecto.service.FotoService;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping(value = "/api/foto")
@@ -47,4 +50,10 @@ public class FotoController {
     public void delete(@PathVariable long id) {
         fotoService.delete(id);
     }
+
+    @GetMapping("/finca/{idFinca}")
+    public ResponseEntity<List<FotoDTO>> getFotosByFinca(@PathVariable Long idFinca) {
+        return ResponseEntity.ok(fotoService.getFotosByFinca(idFinca));
+    }
+    
 }

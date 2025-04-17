@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Where(clause = "status = 0")
-@SQLDelete(sql = "UPDATE administrador SET status = 1 WHERE id=?")
+@SQLDelete(sql = "UPDATE pago SET status = 1 WHERE id=?")
 
 public class Pago {
 

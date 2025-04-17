@@ -14,4 +14,6 @@ public class FotoDTO {
     private long id;
     private String imagenUrl;
 
+    private Long idFinca;
+
 }

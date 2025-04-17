@@ -66,4 +66,9 @@ public class FincaController {
         return ResponseEntity.ok(fincaService.getFincasByDepartamento(idDepartamento));
     }
 
+    @GetMapping("/habitaciones/{cantHabitaciones}")
+    public ResponseEntity<List<FincaDTO>> getFincasByHabitaciones(@PathVariable int cantHabitaciones) {
+        return ResponseEntity.ok(fincaService.getFincasByHabitaciones(cantHabitaciones));
+    }
+
 }

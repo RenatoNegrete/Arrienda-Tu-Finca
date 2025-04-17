@@ -24,7 +24,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Where(clause = "status = 0")
-@SQLDelete(sql = "UPDATE usuario SET status = 1 WHERE id=?")
+@SQLDelete(sql = "UPDATE arrendador SET status = 1 WHERE id=?")
 
 public class Arrendador {
 
@@ -44,5 +44,8 @@ public class Arrendador {
 
     @OneToMany(mappedBy = "arrendador", fetch = FetchType.LAZY)
     private List<Solicitud> solicitudes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "arrendador", fetch = FetchType.LAZY)
+    private List<CalificacionArrendador> calificaciones = new ArrayList<>();
 
 }

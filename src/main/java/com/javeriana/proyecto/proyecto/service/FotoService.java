@@ -34,15 +34,13 @@ public class FotoService {
         return modelMapper.map(foto, FotoDTO.class);
     }
 
-public List<FotoDTO> get() {
+    public List<FotoDTO> get() {
         List<Foto> fotos = (List<Foto>) fotoRepository.findAll();
         List<FotoDTO> fotoDtos = fotos.stream()
                                 .map(foto -> modelMapper.map(foto, FotoDTO.class))
                                 .toList();
         return fotoDtos;
     }
-
-
 
     public FotoDTO save(FotoDTO fotoDTO) {
         Foto foto = modelMapper.map(fotoDTO, Foto.class);
@@ -68,6 +66,16 @@ public List<FotoDTO> get() {
                 .orElseThrow(() -> new NotFoundException(fotoException + id + " no encontrado"));
         foto.setStatus(1);
         fotoRepository.save(foto);
+    }
+
+    public List<FotoDTO> getFotosByFinca(long idFinca) {
+        List<Foto> fotos = fotoRepository.findByFincaId(idFinca);
+
+        return fotos.stream().map(foto -> {
+            FotoDTO  fotoDTO = modelMapper.map(foto, FotoDTO.class);
+            fotoDTO.setIdFinca(foto.getFinca() != null ? foto.getFinca().getId() : null);
+            return fotoDTO;
+        }).toList();
     }
 
 }

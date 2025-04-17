@@ -58,7 +58,6 @@ class FincaServiceTest {
         finca.setAdministrador(administrador);
         finca.setDepartamento(departamento);
         finca.setMunicipio(municipio);
-        finca.setFoto(foto);
         finca.setStatus(0);
 
         fincaDTO = new FincaDTO();
@@ -66,7 +65,6 @@ class FincaServiceTest {
         fincaDTO.setIdAdministrador(1L);
         fincaDTO.setIdDepartamento(1L);
         fincaDTO.setIdMunicipio(1L);
-        fincaDTO.setIdFoto(1L);
     }
 
     @Test

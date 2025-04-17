@@ -25,6 +25,5 @@ public class FincaDTO {
     private Long idAdministrador;
     private Long idDepartamento;
     private Long idMunicipio;
-    private Long idFoto;
 
 }

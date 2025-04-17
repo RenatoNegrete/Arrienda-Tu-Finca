@@ -60,8 +60,10 @@ public class Finca {
     @JoinColumn(name = "id_municipio", referencedColumnName = "id", nullable = false)
     private Municipio municipio;
 
-    @OneToOne
-    @JoinColumn(name = "id_foto", referencedColumnName = "id")
-    private Foto foto;
+    @OneToMany(mappedBy = "finca", fetch = FetchType.LAZY)
+    private List<Foto> fotos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "finca", fetch = FetchType.LAZY)
+    private List<CalificacionFinca> calificaciones = new ArrayList<>();
 
 }

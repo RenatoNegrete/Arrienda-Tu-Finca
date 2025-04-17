@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface FincaRepository extends JpaRepository<Finca, Long> {
     List<Finca> findByAdministrador(Administrador administrador);
     List<Finca> findByDepartamentoId(Long idDepartamento);
+    List<Finca> findByNombre(String nombre);
+    List<Finca> findByHabitaciones(int habitaciones);
 }
