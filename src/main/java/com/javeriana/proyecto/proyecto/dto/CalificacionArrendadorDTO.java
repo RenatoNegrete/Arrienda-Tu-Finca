@@ -15,6 +15,6 @@ public class CalificacionArrendadorDTO {
     private int puntuacion;
     private String comentario;
 
-    private Long idFinca;
+    private Long idArrendador;
 
 }
