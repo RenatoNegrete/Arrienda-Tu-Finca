@@ -18,7 +18,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 
-import com.javeriana.proyecto.proyecto.config.filter.JWTAuthorizationFilter;
+import com.javeriana.proyecto.proyecto.FIlter.JWTAuthorizationFilter;
+
 
 @Configuration
 @EnableWebSecurity
