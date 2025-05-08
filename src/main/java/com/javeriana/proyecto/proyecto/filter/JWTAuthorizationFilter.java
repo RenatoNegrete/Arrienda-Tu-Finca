@@ -1,4 +1,4 @@
-package com.javeriana.proyecto.proyecto.FIlter;
+package com.javeriana.proyecto.proyecto.filter;
 
 import java.io.IOException;
 

@@ -20,7 +20,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
 
-import com.javeriana.proyecto.proyecto.FIlter.JWTAuthorizationFilter;
+import com.javeriana.proyecto.proyecto.filter.JWTAuthorizationFilter;
 
 
 @Configuration
