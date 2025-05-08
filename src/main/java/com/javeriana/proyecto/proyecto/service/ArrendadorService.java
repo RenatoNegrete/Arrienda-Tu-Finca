@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.dto.ArrendadorDTO;
@@ -27,6 +28,9 @@ public class ArrendadorService {
         this.arrendadorRepository = arrendadorRepository;
         this.modelMapper = modelMapper;
     }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private String arrendadorException = "Arrendador with ID ";
 
@@ -51,6 +55,9 @@ public class ArrendadorService {
         }
 
         Arrendador arrendador = modelMapper.map(arrendadorDTO, Arrendador.class);
+
+        arrendador.setContrasena(passwordEncoder.encode(arrendadorDTO.getContrasena()));
+
         arrendador.setStatus(0);
         arrendador = arrendadorRepository.save(arrendador);
         arrendadorDTO.setId(arrendador.getId());

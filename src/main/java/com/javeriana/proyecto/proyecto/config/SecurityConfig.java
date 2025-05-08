@@ -1,5 +1,7 @@
 package com.javeriana.proyecto.proyecto.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +38,7 @@ public class SecurityConfig implements ISecurityConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+    
 	@Override
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -46,12 +49,21 @@ public class SecurityConfig implements ISecurityConfig {
 	@Override
     @Bean
 	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        
+
+        http
+            .cors(cors -> cors.configurationSource(request -> {
+                var corsConfig = new org.springframework.web.cors.CorsConfiguration();
+                corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://10.43.103.108"));
+                corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                corsConfig.setAllowedHeaders(List.of("*"));
+                corsConfig.setAllowCredentials(true);
+                return corsConfig;
+            }))
+            .csrf(csrf -> csrf.ignoringRequestMatchers(ignoreSpecificRequests()))
+            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
     
-        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class).
-                                csrf(csrf -> csrf.ignoringRequestMatchers(ignoreSpecificRequests()));
-		return http.build();
-	}
+        return http.build();
+    }
 
 
 	private RequestMatcher ignoreSpecificRequests() {
