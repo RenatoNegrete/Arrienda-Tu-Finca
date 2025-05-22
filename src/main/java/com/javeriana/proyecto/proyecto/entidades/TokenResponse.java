@@ -7,12 +7,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoginRequest {
+@NoArgsConstructor
+public class TokenResponse {
 
-    private String email;
-    private String contrasena;
-    private String type;
-    
+    private String token;
+    private String refreshToken;
+
 }

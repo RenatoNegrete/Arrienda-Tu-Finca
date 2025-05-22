@@ -1,77 +1,49 @@
 package com.javeriana.proyecto.proyecto.service;
 
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
+import java.util.Map;
 
-import org.springframework.security.core.GrantedAuthority;
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.javeriana.proyecto.proyecto.dto.UsuarioDTO;
+import com.javeriana.proyecto.proyecto.entidades.User;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JWTTokenService {
-// @Value("${jwt.secret}")
-    // private String secret = "DES6123";
 
-    // @Value("${jwt.expiration}")
-    private long jwtExpiration = 99999999;
-    private Key jwtKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);; // You need to set this key appropriately
+    @Value("${jwt.secret}")
+    private String secretKey;
+    private long jwtExpiration = 86400000;
+    private long refreshExpiration = 604800000;
 
-    public String generarToken(UsuarioDTO usuario) {
+    public String generarToken(final User user) {
+        return buildToken(user, jwtExpiration);
+    }
 
-        // byte[] secretBytes = secret.getBytes();
-        // Key jwtKey = new SecretKeySpec(secretBytes, SignatureAlgorithm.HS512.getJcaName());
-        ObjectMapper objectMapper = new ObjectMapper();
-        String username = "";
-        try {
-            username = objectMapper.writeValueAsString(usuario);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        System.out.println(username  );
+    public String generarRefreshToken(final User user) {
+        return buildToken(user, refreshExpiration);
+    }
 
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpiration);
-
-        Collection<? extends GrantedAuthority> authorities = new ArrayList<>();
-
+    public String buildToken(final User user, final long expiration) {
         return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(now)
-                .setExpiration(expiryDate)
-                .claim("authorities", authorities.stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.toList()))
-                .signWith(jwtKey, SignatureAlgorithm.HS512) // Use your appropriate signing algorithm
+                .setId(user.getId().toString())
+                .setClaims(Map.of("nombre", user.getNombre()))
+                .setSubject(user.getEmail())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey())
                 .compact();
     }
 
-    public String getUsername(String jwtToken){
-        return decodificarToken(jwtToken).getSubject();
+    private SecretKey getSignInKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public Date getFechaExpiracion(String jwtToken){
-        return decodificarToken(jwtToken).getExpiration();
-    }
-
-    public Claims decodificarToken(String jwtToken) {
-        // byte[] secretBytes = secret.getBytes();
-        // Key jwtKey = new SecretKeySpec(secretBytes, SignatureAlgorithm.HS512.getJcaName());
-
-        return Jwts.parserBuilder()
-                            .setSigningKey(jwtKey)
-                            .build()
-                            .parseClaimsJws(jwtToken)
-                            .getBody();
-    }
 }
