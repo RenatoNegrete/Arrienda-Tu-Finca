@@ -21,7 +21,6 @@ import com.javeriana.proyecto.proyecto.entidades.Token;
 import com.javeriana.proyecto.proyecto.entidades.TokenResponse;
 
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +92,7 @@ public class AuthService {
     }
 
     private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
+        Token token = Token.builder()
                         .user(user)
                         .token(jwtToken)
                         .tokenType(Token.TokenType.BEARER)
