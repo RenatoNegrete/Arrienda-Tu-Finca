@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -104,7 +105,7 @@ public class AuthService {
 
     public void revokeAllUserTokens(final User user) {
         final List<Token> validUserTokens = tokenRepository
-                .findAllValidIsFalseOrRevokedIsFalseByUserId(user.getId());
+                .findAllValidTokensByUserId(user.getId());
         if(!validUserTokens.isEmpty()) {
             for(final Token token : validUserTokens) {
                 token.setExpired(true);
@@ -112,6 +113,31 @@ public class AuthService {
             }
             tokenRepository.saveAll(validUserTokens);
         }
+    }
+
+    public TokenResponse refreshToken(final String authHeader) {
+        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid Bearer Token");
+        }
+
+        final String refreshToken = authHeader.substring(7);
+        final String userEmail = jwtService.extractUsername(refreshToken);
+
+        if(userEmail == null) {
+            throw new IllegalArgumentException("Invalid Refresh Token");
+        }
+
+        final User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new UsernameNotFoundException(userEmail));
+
+        if(!jwtService.isTokenValid(refreshToken, user)) {
+            throw new IllegalArgumentException("Invalid Refresh Token");
+        }
+
+        final String accesToken = jwtService.generarToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, accesToken);
+        return new TokenResponse(accesToken, refreshToken);
     }
 
 }

@@ -1,94 +1,89 @@
 package com.javeriana.proyecto.proyecto.filter;
 
 import java.io.IOException;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.http.HttpHeaders;
 
-import com.javeriana.proyecto.proyecto.service.CustomDetailService;
+import com.javeriana.proyecto.proyecto.entidades.Token;
+import com.javeriana.proyecto.proyecto.entidades.User;
+import com.javeriana.proyecto.proyecto.repositorios.TokenRepository;
+import com.javeriana.proyecto.proyecto.repositorios.UserRepository;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-
-
-
-import io.jsonwebtoken.security.SignatureException;
+import lombok.RequiredArgsConstructor;
 
 
 import com.javeriana.proyecto.proyecto.service.JWTTokenService;
 
-
 @Component
-@Service
+@RequiredArgsConstructor
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
-    
-public static final String HEADER = "Authorization";
-public static final String PREFIX ="Bearer";
-
-@Autowired
-private CustomDetailService userDetailService;
-@Autowired
-private JWTTokenService JWTTokenService;
-
-@Override
-protected void doFilterInternal (@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain chain) throws ServletException, IOException{
-
-	System.out.println( "-------->>>-------->>> Filtro"  );
-		System.out.println( "-------->>>-------->>> Filtro"  );
-		System.out.println( "-------->>>-------->>> Filtro"  );
-		System.out.println( "-------->>>-------->>> Filtro"  );
-		try {
-			if (existeJWTToken(request)) {
-				Claims claims = validarToken(request);
-				if (claims.get("authorities") != null) {
-					String username = getUsername(request);
-					UserDetails userDetails = userDetailService.loadUserByUsername(username);
-					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, userDetails, null);
-					auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-           			SecurityContextHolder.getContext().setAuthentication(auth);
-				} else {
-					SecurityContextHolder.clearContext();
-				}
-			} else {
-				SecurityContextHolder.clearContext();
-			}
-			chain.doFilter(request, response);
-		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException e) {
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
-		}
-	}	
-    
-
-
-private Claims validarToken(HttpServletRequest request) {
-    String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-    return JWTTokenService.decodificarToken(jwtToken);
-}
-private String getUsername(HttpServletRequest request) {
-    String jwtToken = request.getHeader(HEADER).replace(PREFIX, "");
-    return JWTTokenService.getUsername(jwtToken);
-}
-private boolean existeJWTToken(HttpServletRequest request) {
-    String authenticationHeader = request.getHeader(HEADER);
-    return !(authenticationHeader == null || !authenticationHeader.startsWith(PREFIX));
-}
-}
-
  
+	private final JWTTokenService jwtTokenService;
+	private final UserDetailsService userDetailsService;
+	private final TokenRepository tokenRepository;
+	private final UserRepository userRepository;
 
+	@Override
+	protected void doFilterInternal(
+			@NonNull HttpServletRequest request,
+			@NonNull HttpServletResponse response,
+			@NonNull FilterChain filterChain
+	) throws ServletException, IOException {
 
+		if(request.getServletPath().contains("/auth")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		final String jwtToken = authHeader.substring(7);
+		final String userEmail = jwtTokenService.extractUsername(jwtToken);
+		if(userEmail == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+			return;
+		}
+
+		final Token token = tokenRepository.findByToken(jwtToken)
+				.orElse(null);
+
+		if(token == null || token.isExpired() || token.isRevoked()) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		final UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+		final Optional<User> user = userRepository.findByEmail(userDetails.getUsername());
+		if(user.isEmpty()) {
+			filterChain.doFilter(request, response);
+			return;
+		}
+
+		final boolean isTokenValid = jwtTokenService.isTokenValid(jwtToken, user.get());
+		if(!isTokenValid) {
+			return;
+		}
+
+		final var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+		authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+		SecurityContextHolder.getContext().setAuthentication(authToken);
+		filterChain.doFilter(request, response);
+	}
+
+}

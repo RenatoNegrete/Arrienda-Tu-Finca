@@ -1,87 +1,72 @@
 package com.javeriana.proyecto.proyecto.config;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.condition.RequestMethodsRequestCondition;
+import org.springframework.http.HttpHeaders;
 
+import com.javeriana.proyecto.proyecto.entidades.Token;
 import com.javeriana.proyecto.proyecto.filter.JWTAuthorizationFilter;
+import com.javeriana.proyecto.proyecto.repositorios.TokenRepository;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig implements ISecurityConfig {
+@RequiredArgsConstructor
+@EnableMethodSecurity
+public class SecurityConfig {
 
+    private final JWTAuthorizationFilter jwtAuthorizationFilter;
+    private final AuthenticationProvider authenticationProvider;
+    private final TokenRepository tokenRepository;
 
-
-
-    @Autowired
-    private JWTAuthorizationFilter jwtAuthorizationFilter;
-
-	@Override
     @Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-    
-	@Override
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
-    }
-
-	
-	@Override
-    @Bean
-	public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(request -> {
-                var corsConfig = new org.springframework.web.cors.CorsConfiguration();
-                corsConfig.setAllowedOrigins(List.of("http://localhost:4200", "http://10.43.103.108"));
-                corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                corsConfig.setAllowedHeaders(List.of("*"));
-                corsConfig.setAllowCredentials(true);
-                return corsConfig;
-            }))
-            .csrf(csrf -> csrf.ignoringRequestMatchers(ignoreSpecificRequests()))
-            .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-    
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(req -> 
+                        req.requestMatchers("/auth/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> 
+                    logout.logoutUrl("/auth/logout")
+                        .addLogoutHandler((request, response, authentication) -> {
+                            final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+                            logout(authHeader);
+                        })
+                        .logoutSuccessHandler((request, response, authentication) -> 
+                                SecurityContextHolder.clearContext())
+                );
+        
         return http.build();
     }
 
+    private void logout(final String token) {
+        if(token == null || !token.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid token");
+        }
 
-	private RequestMatcher ignoreSpecificRequests() {
-        return new OrRequestMatcher(
-            // new AntPathRequestMatcher("/indicadoressuim/api/autenticacion"),
-            // new AntPathRequestMatcher("/indicadoressuim/api/peticion-mes"),
-            new AntPathRequestMatcher("/api/administrador/login", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/api/arrendador/login", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/api/administrador", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/api/administrador", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/jwt/security/autenticar/**", HttpMethod.GET.name()),
-            new AntPathRequestMatcher("/jwt/security/autenticar/**", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/jwt/security/autenticar/**", HttpMethod.PUT.name()),
-            new AntPathRequestMatcher("/jwt/security/autenticar/**", HttpMethod.DELETE.name()),
-            new AntPathRequestMatcher("/jwt/security/usuario/**", HttpMethod.GET.name()),
-            new AntPathRequestMatcher("/jwt/security/usuario/**", HttpMethod.POST.name()),
-            new AntPathRequestMatcher("/jwt/security/usuario/**", HttpMethod.PUT.name()),
-            new AntPathRequestMatcher("/jwt/security/usuario/**", HttpMethod.DELETE.name())
-        );
+        final String jwtToken = token.substring(7);
+        final Token foundToken = tokenRepository.findByToken(jwtToken)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid token"));
+        foundToken.setExpired(true);
+        foundToken.setRevoked(true);
+        tokenRepository.save(foundToken);
     }
+
 }
