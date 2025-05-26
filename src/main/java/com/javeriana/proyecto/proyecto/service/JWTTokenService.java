@@ -1,6 +1,7 @@
 package com.javeriana.proyecto.proyecto.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
@@ -8,10 +9,12 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.javeriana.proyecto.proyecto.entidades.Administrador;
 import com.javeriana.proyecto.proyecto.entidades.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
@@ -41,14 +44,19 @@ public class JWTTokenService {
     }
 
     public String buildToken(final User user, final long expiration) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+        claims.put("nombre", user.getNombre());
+        claims.put("apellido", user.getApellido());
+        claims.put("rol", user instanceof Administrador ? "ADMINISTRADOR" : "ARRENDADOR");
+
         return Jwts.builder()
-                .setId(user.getId().toString())
-                .setClaims(Map.of("nombre", user.getNombre()))
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey())
-                .compact();
+            .setClaims(claims)
+            .setSubject(user.getEmail()) // el "subject" típicamente es el identificador principal, como el email
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(new Date(System.currentTimeMillis() + expiration))
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
     }
 
     public boolean isTokenValid(final String token, final User user) {
