@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Permite todas las rutas
-                        .allowedOrigins("http://localhost:4200", "http://10.43.103.108") // Dominio del frontend en Angular
+                        .allowedOrigins("*") // Dominio del frontend en Angular
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos HTTP permitidos
                         .allowedHeaders("*") // Permite todos los headers
                         .allowCredentials(true); // Permite enviar cookies o credenciales si es necesario
