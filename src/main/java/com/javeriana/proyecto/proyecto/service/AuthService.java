@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.javeriana.proyecto.proyecto.entidades.User;
+import com.javeriana.proyecto.proyecto.exception.EmailExistsException;
 import com.javeriana.proyecto.proyecto.repositorios.AdministradorRepository;
 import com.javeriana.proyecto.proyecto.repositorios.ArrendadorRepository;
 import com.javeriana.proyecto.proyecto.repositorios.TokenRepository;
@@ -48,6 +49,9 @@ public class AuthService {
         };
         
        if(rol.equals(Rol.ARRENDADOR)) {
+            if (arrendadorRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new EmailExistsException("El email ya está en uso");
+            }
             Arrendador arrendador = new Arrendador();
             arrendador.setNombre(request.getNombre());
             arrendador.setApellido(request.getApellido());
@@ -57,6 +61,9 @@ public class AuthService {
 
             user = arrendadorRepository.save(arrendador);
        } else {
+            if (adminRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new EmailExistsException("El email ya está en uso");
+            }
             Administrador admin = new Administrador();
             admin.setNombre(request.getNombre());
             admin.setApellido(request.getApellido());
